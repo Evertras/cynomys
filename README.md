@@ -29,13 +29,13 @@ For simple use cases, just use command line args.
 
 ```bash
 # On Machine A - 192.168.0.1
-cyn --listen 192.168.0.1 --call-tcp 192.168.0.2 --call-tcp 192.168.0.3
+cyn --listen 192.168.0.1:1234 --call-tcp 192.168.0.2:3456 --call-tcp 192.168.0.3:3456
 
 # On Machine B - 192.168.0.2 (shorthand flags)
-cyn -l 192.168.0.2 -t 192.168.0.1 -t 192.168.0.3
+cyn -l 192.168.0.2:2345 -t 192.168.0.1:1234 -t 192.168.0.3:3456
 
 # On Machine C - 192.168.0.3 (broadcasting)
-cyn -l 192.168.0.3 --broadcast 192.168.0.255
+cyn -l 192.168.0.3:3456 --broadcast 192.168.0.255
 ```
 
 ## Why the name
