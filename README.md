@@ -1,4 +1,4 @@
-# Cynomys
+# Cynomys (cyn)
 
 A network diagnostic testing tool to ensure communication behaves as expected.
 
@@ -41,3 +41,7 @@ cyn -l 192.168.0.3:3456 --broadcast 192.168.0.255
 ## Why the name
 
 [Prarie dogs talk to each other](https://en.wikipedia.org/wiki/Prairie_dog)
+
+### How do I pronounce it?
+
+idk
