@@ -3,8 +3,7 @@ FROM golang:1.19.3 AS builder
 
 WORKDIR /app
 COPY go.mod .
-# TODO: Add back in once we get actual modules installed
-#COPY go.sum .
+COPY go.sum .
 RUN go mod download
 
 COPY cmd/ cmd/

@@ -1,5 +1,5 @@
 # Build for local
-bin/cyn: ./cmd/cyn/*.go
+bin/cyn: ./cmd/cyn/*.go ./pkg/listener/*.go
 	go build -o bin/cyn ./cmd/cyn/*.go
 
 .PHONY: docker
@@ -8,7 +8,11 @@ docker:
 
 .PHONY: test
 test:
-	go test ./...
+	go test ./pkg/...
+
+.PHONY: bdd
+bdd: bin/cyn
+	go test ./tests/...
 
 .PHONY: fmt
 fmt:
