@@ -28,14 +28,14 @@ Config file for more advanced setups.
 For simple use cases, just use command line args.
 
 ```bash
-# On Machine A - 192.168.0.1
-cyn --listen 192.168.0.1:1234 --call-tcp 192.168.0.2:3456 --call-tcp 192.168.0.3:3456
+# On Machine A - 192.168.58.2
+cyn --listen 192.168.58.1:1234 --call-tcp 192.168.58.3:3456 --call-tcp 192.168.58.4:3456
 
-# On Machine B - 192.168.0.2 (shorthand flags)
-cyn -l 192.168.0.2:2345 -t 192.168.0.1:1234 -t 192.168.0.3:3456
+# On Machine B - 192.168.58.3 (shorthand flags)
+cyn -l 192.168.58.2:2345 -t 192.168.58.2:1234 -t 192.168.58.4:3456
 
-# On Machine C - 192.168.0.3 (broadcasting)
-cyn -l 192.168.0.3:3456 --broadcast 192.168.0.255
+# On Machine C - 192.168.58.4 (broadcasting)
+cyn -l 192.168.58.3:3456 --broadcast 192.168.58.255
 ```
 
 ## Why the name
