@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/cucumber/godog"
 )
 
 func (t *testContext) cynIsListeningFor(protocol, addr string) error {
@@ -18,7 +20,7 @@ func (t *testContext) cynIsListeningFor(protocol, addr string) error {
 		return nil
 
 	case "TCP":
-		return fmt.Errorf("not implemented yet")
+		return godog.ErrPending
 
 	default:
 		return fmt.Errorf("unexpected protocol %q", protocol)
