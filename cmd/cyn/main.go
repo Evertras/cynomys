@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
 func main() {
+	log.SetOutput(os.Stdout)
 	err := rootCmd.Execute()
 
 	if err != nil {
