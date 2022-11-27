@@ -12,7 +12,7 @@ test:
 
 .PHONY: bdd
 bdd: bin/cyn
-	go test -v ./tests/...
+	go test -race -v ./tests/...
 
 .PHONY: fmt
 fmt:
