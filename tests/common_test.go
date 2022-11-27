@@ -64,6 +64,16 @@ func (t *testContext) someStdoutContains(output string) error {
 		}
 	}
 
+	// Show any stderr for easier debugging
+	for _, cmd := range t.cmds {
+		stderr := cmd.Stderr()
+
+		if len(stderr) > 0 {
+			fmt.Println("vv STDERR vv")
+			fmt.Println(stderr)
+		}
+	}
+
 	return fmt.Errorf("failed to find %q in any output", output)
 }
 
