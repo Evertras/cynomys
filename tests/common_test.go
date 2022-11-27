@@ -26,14 +26,12 @@ func (t *testContext) thereIsNoOutput() error {
 		stdout := cmd.Stdout()
 
 		if len(stdout) > 0 {
-			fmt.Println(stdout)
 			return fmt.Errorf("stdout output length: %d", len(stdout))
 		}
 
 		stderr := cmd.Stderr()
 
 		if len(stderr) > 0 {
-			fmt.Println(stderr)
 			return fmt.Errorf("stderr output length: %d", len(stderr))
 		}
 	}
@@ -44,8 +42,6 @@ func (t *testContext) thereIsNoOutput() error {
 func (t *testContext) someStdoutContains(output string) error {
 	for _, cmd := range t.cmds {
 		stdout := cmd.Stdout()
-
-		fmt.Println(stdout)
 
 		if strings.Contains(stdout, output) {
 			return nil
