@@ -15,6 +15,22 @@ type testContext struct {
 	cmds    []*captured.RunningCmd
 }
 
+func (t *testContext) startInBackground(command string, args ...string) error {
+	cmd, err := captured.StartInBackground(t.execCtx, command, args...)
+
+	if err != nil {
+		return fmt.Errorf("t.startCmd: %w", err)
+	}
+
+	t.cmds = append(t.cmds, cmd)
+
+	return nil
+}
+
+func (t *testContext) startCynInBackground(args ...string) error {
+	return t.startInBackground("../bin/cyn", args...)
+}
+
 func (t *testContext) waitSeconds(seconds int) error {
 	time.Sleep(time.Second * time.Duration(seconds))
 
@@ -26,13 +42,13 @@ func (t *testContext) thereIsNoOutput() error {
 		stdout := cmd.Stdout()
 
 		if len(stdout) > 0 {
-			return fmt.Errorf("stdout output length: %d", len(stdout))
+			return fmt.Errorf("stdout output:\n%s", stdout)
 		}
 
 		stderr := cmd.Stderr()
 
 		if len(stderr) > 0 {
-			return fmt.Errorf("stderr output length: %d", len(stderr))
+			return fmt.Errorf("stderr output:\n%s", stderr)
 		}
 	}
 
