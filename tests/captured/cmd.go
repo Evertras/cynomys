@@ -12,6 +12,12 @@ type capturedOutput struct {
 	data []byte
 }
 
+func newCapturedOutput() *capturedOutput {
+	return &capturedOutput{
+		data: make([]byte, 0, 1024),
+	}
+}
+
 func (c *capturedOutput) Write(data []byte) (n int, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -32,8 +38,8 @@ func StartInBackground(ctx context.Context, command string, args ...string) (*Ru
 
 	r := &RunningCmd{
 		cmd:    cmd,
-		stdout: new(capturedOutput),
-		stderr: new(capturedOutput),
+		stdout: newCapturedOutput(),
+		stderr: newCapturedOutput(),
 	}
 
 	cmd.Stdout = r.stdout
