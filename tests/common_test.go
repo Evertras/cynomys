@@ -1,43 +1,18 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"os/exec"
+	"net"
+	"strings"
 	"time"
-)
 
-type runningCmd struct {
-	cmd    *exec.Cmd
-	stdout *bytes.Buffer
-	stderr *bytes.Buffer
-}
+	"github.com/evertras/cynomys/tests/captured"
+)
 
 type testContext struct {
 	execCtx context.Context
-	cmds    []*runningCmd
-}
-
-func (t *testContext) startCmd(command string, args ...string) (*runningCmd, error) {
-	cmd := exec.CommandContext(t.execCtx, command, args...)
-
-	r := &runningCmd{
-		cmd:    cmd,
-		stdout: new(bytes.Buffer),
-		stderr: new(bytes.Buffer),
-	}
-
-	cmd.Stdout = r.stdout
-	cmd.Stderr = r.stderr
-
-	err := cmd.Start()
-
-	if err != nil {
-		return nil, fmt.Errorf("cmd.Start: %w", err)
-	}
-
-	return r, nil
+	cmds    []*captured.RunningCmd
 }
 
 func (t *testContext) waitSeconds(seconds int) error {
@@ -48,20 +23,61 @@ func (t *testContext) waitSeconds(seconds int) error {
 
 func (t *testContext) thereIsNoOutput() error {
 	for _, cmd := range t.cmds {
-		stdout := cmd.stdout.String()
+		stdout := cmd.Stdout()
 
 		if len(stdout) > 0 {
 			fmt.Println(stdout)
 			return fmt.Errorf("stdout output length: %d", len(stdout))
 		}
 
-		stderr := cmd.stderr.String()
+		stderr := cmd.Stderr()
 
 		if len(stderr) > 0 {
 			fmt.Println(stderr)
 			return fmt.Errorf("stderr output length: %d", len(stderr))
 		}
 	}
+
+	return nil
+}
+
+func (t *testContext) someStdoutContains(output string) error {
+	for _, cmd := range t.cmds {
+		stdout := cmd.Stdout()
+
+		fmt.Println(stdout)
+
+		if strings.Contains(stdout, output) {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("failed to find %q in any output", output)
+}
+
+func (t *testContext) iSendAUDPPacketContaining(data string, addressRaw string) error {
+	addr, err := net.ResolveUDPAddr("udp", addressRaw)
+
+	if err != nil {
+		return fmt.Errorf("net.ResolveUDPAddr for %q: %w", addressRaw, err)
+	}
+
+	client, err := net.DialUDP("udp", nil, addr)
+
+	if err != nil {
+		return fmt.Errorf("net.DialUDP for %q: %w", addressRaw, err)
+	}
+
+	defer client.Close()
+
+	_, err = client.Write([]byte(data))
+
+	if err != nil {
+		return fmt.Errorf("client.Write for %q: %w", addressRaw, err)
+	}
+
+	// Just to make sure it got there...
+	time.Sleep(time.Millisecond * 50)
 
 	return nil
 }

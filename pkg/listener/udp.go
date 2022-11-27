@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 )
 
 type UDPListener struct {
@@ -33,5 +34,6 @@ func (l *UDPListener) Listen() error {
 		}
 
 		log.Printf("Read %d bytes from %v", rlen, remote)
+		log.Printf("Received: %s", strings.ReplaceAll(string(buf), "\n", "\\n"))
 	}
 }
