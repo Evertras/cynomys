@@ -29,7 +29,7 @@ For simple use cases, just use command line args.
 
 ```bash
 # On Machine A - 192.168.58.2
-cyn --listen 192.168.58.1:1234 --call-tcp 192.168.58.3:3456 --call-tcp 192.168.58.4:3456
+cyn --listen-udp 192.168.58.1:1234 --call-tcp 192.168.58.3:3456 --call-tcp 192.168.58.4:3456
 
 # On Machine B - 192.168.58.3 (shorthand flags)
 cyn -l 192.168.58.2:2345 -t 192.168.58.2:1234 -t 192.168.58.4:3456
