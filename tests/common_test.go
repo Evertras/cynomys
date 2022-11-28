@@ -28,7 +28,16 @@ func (t *testContext) startInBackground(command string, args ...string) error {
 }
 
 func (t *testContext) startCynInBackground(args ...string) error {
-	return t.startInBackground("../bin/cyn", args...)
+	err := t.startInBackground("../bin/cyn", args...)
+
+	if err != nil {
+		return err
+	}
+
+	// Give cyn a moment to actually start
+	time.Sleep(time.Millisecond * 200)
+
+	return nil
 }
 
 func (t *testContext) waitSeconds(seconds int) error {
