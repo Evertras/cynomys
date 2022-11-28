@@ -11,3 +11,10 @@ Feature: listen for UDP
     Given cyn is listening for UDP on 127.0.0.1:14564
     When I send a UDP packet containing "hello" to 127.0.0.1:14564
     Then the stdout contains "hello"
+
+  Scenario: multiple UDP packets are sent
+    Given cyn is listening for UDP on 127.0.0.1:14564
+    When I send a UDP packet containing "hello" to 127.0.0.1:14564
+    And I send a UDP packet containing "another" to 127.0.0.1:14564
+    Then the stdout contains "hello"
+    And the stdout contains "another"
