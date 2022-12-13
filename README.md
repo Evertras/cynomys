@@ -58,6 +58,8 @@ A full configuration file with all options is given below.
 # my-cyn-config.yaml
 listen-udp:
 - 192.168.58.4:2345
+send-udp:
+- 192.168.58.3:1234
 ```
 
 The configuration is loaded via file.
