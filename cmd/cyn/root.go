@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"time"
 
@@ -47,13 +48,16 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveUDPAddr for %q: %w", sendUDPTo, err)
 			}
 
+			// Shadow capture for use within func below
+			sendUDPTo := sendUDPTo
+
 			eg.Go(func() error {
 				c := sender.NewUDPSender(*addr)
 
 				for {
 					err := c.Send([]byte("hi"))
 					if err != nil {
-						return fmt.Errorf("c.Send: %w", err)
+						log.Printf("Failed to send to %q: %v", sendUDPTo, err)
 					}
 					time.Sleep(time.Second)
 				}

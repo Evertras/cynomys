@@ -35,7 +35,7 @@ func (t *testContext) startCynInBackground(args ...string) error {
 	}
 
 	// Give cyn a moment to actually start
-	time.Sleep(time.Millisecond * 200)
+	time.Sleep(time.Millisecond * 500)
 
 	return nil
 }
