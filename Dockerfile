@@ -7,7 +7,8 @@ COPY go.sum .
 RUN go mod download
 
 COPY cmd/ cmd/
-RUN go build -o /cyn ./cmd/cyn/*.go
+COPY pkg/ pkg/
+RUN CGO_ENABLED=0 go build -o /cyn ./cmd/cyn/*.go
 
 # We want to access some basic shell tools for debugging, but we want to be
 # as tiny as possible...
