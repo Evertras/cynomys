@@ -26,8 +26,10 @@ func init() {
 var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		eg := errgroup.Group{}
+		count := 0
 
 		for _, listenOnUDP := range listenOnUDPList {
+			count++
 			addr, err := net.ResolveUDPAddr("udp", listenOnUDP)
 
 			if err != nil {
@@ -42,6 +44,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		for _, sendUDPTo := range sendUDPToList {
+			count++
 			addr, err := net.ResolveUDPAddr("udp", sendUDPTo)
 
 			if err != nil {
@@ -62,6 +65,10 @@ var rootCmd = &cobra.Command{
 					time.Sleep(time.Second)
 				}
 			})
+		}
+
+		if count == 0 {
+			return fmt.Errorf("no listeners or senders specified")
 		}
 
 		return eg.Wait()

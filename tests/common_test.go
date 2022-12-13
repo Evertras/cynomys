@@ -15,6 +15,10 @@ type testContext struct {
 	cmds    []*captured.RunningCmd
 }
 
+func (t *testContext) cynIsRunWithoutFlagsOrConfig() error {
+	return t.startCynInBackground()
+}
+
 func (t *testContext) startInBackground(command string, args ...string) error {
 	cmd, err := captured.StartInBackground(t.execCtx, command, args...)
 
@@ -42,6 +46,14 @@ func (t *testContext) startCynInBackground(args ...string) error {
 
 func (t *testContext) waitSeconds(seconds int) error {
 	time.Sleep(time.Second * time.Duration(seconds))
+
+	return nil
+}
+
+func (t *testContext) waitAMoment() error {
+	// This is arbitrary, but useful for letting things settle... bump this up if
+	// things get flakey, but they really shouldn't be flakey...
+	time.Sleep(time.Millisecond * 200)
 
 	return nil
 }
@@ -83,7 +95,29 @@ func (t *testContext) someStdoutContains(output string) error {
 		}
 	}
 
-	return fmt.Errorf("failed to find %q in any output", output)
+	return fmt.Errorf("failed to find %q in any stdout output", output)
+}
+
+func (t *testContext) someStderrContains(output string) error {
+	for _, cmd := range t.cmds {
+		stderr := cmd.Stderr()
+
+		if strings.Contains(stderr, output) {
+			return nil
+		}
+	}
+
+	// Show any stderr for easier debugging
+	for _, cmd := range t.cmds {
+		stdout := cmd.Stdout()
+
+		if len(stdout) > 0 {
+			fmt.Println("vv STDOUT vv")
+			fmt.Println(stdout)
+		}
+	}
+
+	return fmt.Errorf("failed to find %q in any stderr output", output)
 }
 
 func (t *testContext) iSendAUDPPacketContaining(data string, addressRaw string) error {

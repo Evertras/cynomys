@@ -41,8 +41,11 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 
 	sc.Step(`^cyn is listening for (UDP|TCP) on (.*)$`, t.cynIsListeningFor)
 	sc.Step(`^cyn is sending (UDP|TCP) to (.*)$`, t.cynIsSendingTo)
+	sc.Step(`^cyn is run with no flags or config$`, t.cynIsRunWithoutFlagsOrConfig)
 	sc.Step(`^I wait (\d+) seconds?$`, t.waitSeconds)
+	sc.Step(`^I wait a moment$`, t.waitAMoment)
 	sc.Step(`^there is no output$`, t.thereIsNoOutput)
 	sc.Step(`^I send a UDP packet containing "(.*)" to (.*)$`, t.iSendAUDPPacketContaining)
 	sc.Step(`^some|the stdout contains "(.*)"$`, t.someStdoutContains)
+	sc.Step(`^some|the stderr contains "(.*)"$`, t.someStderrContains)
 }
