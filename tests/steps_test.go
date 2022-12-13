@@ -39,9 +39,11 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 		cancelScenario()
 	})
 
+	sc.Step(`^a configuration file that contains:$`, t.aConfigurationFileThatContains)
 	sc.Step(`^cyn is listening for (UDP|TCP) on (.*)$`, t.cynIsListeningFor)
 	sc.Step(`^cyn is sending (UDP|TCP) to (.*)$`, t.cynIsSendingTo)
 	sc.Step(`^cyn is run with no flags or config$`, t.cynIsRunWithoutFlagsOrConfig)
+	sc.Step(`^cyn is started with the config file$`, t.cynIsRunWithTheConfigFile)
 	sc.Step(`^I wait (\d+) seconds?$`, t.waitSeconds)
 	sc.Step(`^I wait a moment$`, t.waitAMoment)
 	sc.Step(`^there is no output$`, t.thereIsNoOutput)

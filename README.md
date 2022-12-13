@@ -47,6 +47,30 @@ cyn -u :1234
 cyn -U 192.168.58.255:1234
 ```
 
+### Configuration file
+
+A configuration file can be provided.  This is useful when trying to template
+configuration such as with Consul or similar tools.
+
+A full configuration file with all options is given below.
+
+```yaml
+# my-cyn-config.yaml
+listen-udp:
+- 192.168.58.4:2345
+send-udp:
+- 192.168.58.3:1234
+```
+
+The configuration is loaded via file.
+
+```bash
+cyn --config ./my-cyn-config.yaml
+
+# Can also use -c for shorthand
+cyn -c ./my-cyn-config.yaml
+```
+
 ## Why the name
 
 [Prarie dogs talk to each other](https://en.wikipedia.org/wiki/Prairie_dog)

@@ -6,7 +6,7 @@ build-all: bin/cyn bin/cyn-linux bin/cyn-mac bin/cyn-windows
 
 # Build for local
 bin/cyn: ./cmd/cyn/*.go ./pkg/listener/*.go ./pkg/sender/*.go
-	go build -o bin/cyn ./cmd/cyn/*.go
+	CGO_ENABLED=0 go build -o bin/cyn ./cmd/cyn/*.go
 
 # Build for other OSes
 bin/cyn-linux: ./cmd/cyn/*.go ./pkg/listener/*.go ./pkg/sender/*.go

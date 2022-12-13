@@ -13,3 +13,15 @@ Feature: send and receive UDP
     And cyn is sending UDP to 127.0.0.1:14563
     When I wait 2 seconds
     Then the stdout contains "hi"
+
+  Scenario: an instance is set to call itself via config file
+    Given a configuration file that contains:
+      """
+      listen-udp:
+        - 127.0.0.1:14568
+      send-udp:
+        - 127.0.0.1:14568
+      """
+    And cyn is started with the config file
+    When I wait 2 seconds
+    Then the stdout contains "hi"

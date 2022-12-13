@@ -12,6 +12,9 @@
 # Test binary, built with `go test -c`
 *.test
 
+# Config file used in bdd testing
+tests/cyn-bdd-config.yaml
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 

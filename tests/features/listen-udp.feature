@@ -18,3 +18,13 @@ Feature: listen for UDP
     And I send a UDP packet containing "another" to 127.0.0.1:14564
     Then the stdout contains "hello"
     And the stdout contains "another"
+
+  Scenario: the listener is set via config file
+    Given a configuration file that contains:
+      """
+      listen-udp:
+        - 127.0.0.1:14568
+      """
+    And cyn is started with the config file
+    When I send a UDP packet containing "hello" to 127.0.0.1:14568
+    Then the stdout contains "hello"
