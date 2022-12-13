@@ -1,3 +1,6 @@
+.PHONY: build
+build: bin/cyn
+
 # Build for local
 bin/cyn: ./cmd/cyn/*.go ./pkg/listener/*.go
 	go build -o bin/cyn ./cmd/cyn/*.go
