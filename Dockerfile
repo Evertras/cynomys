@@ -13,6 +13,6 @@ RUN CGO_ENABLED=0 go build -o /cyn ./cmd/cyn/*.go
 # We want to access some basic shell tools for debugging, but we want to be
 # as tiny as possible...
 FROM alpine:3.17.0
-COPY --from=builder /cyn /cyn
+COPY --from=builder /cyn /usr/local/bin/cyn
 
-ENTRYPOINT ["/cyn"]
+ENTRYPOINT ["/usr/local/bin/cyn"]
