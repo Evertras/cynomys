@@ -2,6 +2,8 @@
 
 A network diagnostic testing tool to ensure communication behaves as expected.
 
+Available as a Docker image: `evertras/cynomys` ([Dockerhub link](https://hub.docker.com/r/evertras/cynomys))
+
 ## Features
 
 ### Current
