@@ -6,22 +6,22 @@ A network diagnostic testing tool to ensure communication behaves as expected.
 
 ### Current
 
-### In progress
-
-Test connectivity between different machines on with UDP/TCP to make sure
+Test connectivity between different machines on with UDP to make sure
 the machines can talk to each other as expected.
 
-Test broadcast/multicast.
+Test broadcast/multicast (UDP).
 
 Use in a Docker container for Docker-related networking, or just use the raw
 binary for native level testing.
+
+### In progress
+
+Test connectivity with TCP.
 
 ### Future
 
 Test that connectivity is NOT made between different machines that should not
 talk to each other, for firewall/security reasons.
-
-Config file for more advanced setups.
 
 ## How to use it
 
