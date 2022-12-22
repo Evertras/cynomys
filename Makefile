@@ -18,7 +18,7 @@ bin/cyn-windows: ./cmd/cyn/*.go ./pkg/listener/*.go ./pkg/sender/*.go
 
 .PHONY: docker
 docker:
-	docker build -t evertras/cyn:latest .
+	docker build -t evertras/cynomys:latest .
 
 .PHONY: test
 test:
