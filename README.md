@@ -4,6 +4,15 @@ A network diagnostic testing tool to ensure communication behaves as expected.
 
 Available as a Docker image: `evertras/cynomys` ([Dockerhub link](https://hub.docker.com/r/evertras/cynomys))
 
+## Why does this exist
+
+I got tired of setting up `nc -stuff` on multiple machines and manually trying
+to send data across to ensure a non-trivial network setup was working properly.
+With `cyn`, it can be run quickly and allow me to poke at configurations while
+making sure that connectivity remains (or fails).  There was also a need to test
+broadcast/multicast, which got surprisingly weird with different versions of
+`nc`.
+
 ## Features
 
 ### Current
@@ -24,6 +33,12 @@ Test connectivity with TCP.
 
 Test that connectivity is NOT made between different machines that should not
 talk to each other, for firewall/security reasons.
+
+Customizable data to send.
+
+Customizable intervals.
+
+Allow metric collection (Prometheus, etc).
 
 ## How to use it
 
