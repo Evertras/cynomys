@@ -40,6 +40,17 @@ Customizable intervals.
 
 Allow metric collection (Prometheus, etc).
 
+## How to install it
+
+Binaries are self-contained and available for most major platforms.  Grab
+[a native binary from the releases page](https://github.com/Evertras/cynomys/releases).
+
+Run with docker to see available flags.
+
+```bash
+docker run --rm -it evertras/cynomys
+```
+
 ## How to use it
 
 For simple use cases, just use command line args.  By convention, lowercase
