@@ -49,10 +49,10 @@ Allow metric collection (Prometheus, etc).
 Binaries are self-contained and available for most major platforms. Grab
 [a native binary from the releases page](https://github.com/Evertras/cynomys/releases).
 
-Run with docker to see available flags.
+Or run with docker.
 
 ```bash
-docker run --rm -it evertras/cynomys
+docker run --rm -it evertras/cynomys --help
 ```
 
 ## How to use it
