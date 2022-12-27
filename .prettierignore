@@ -1,16 +1,7 @@
 # Local stuff
 .envrc
-
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+.git
 /bin
-
-# Test binary, built with `go test -c`
-*.test
 
 # Config file used in bdd testing
 tests/cyn-bdd-config.yaml

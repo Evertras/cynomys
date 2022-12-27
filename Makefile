@@ -29,5 +29,10 @@ bdd: bin/cyn
 	go test -race -v ./tests/...
 
 .PHONY: fmt
-fmt:
+fmt: node_modules
 	go fmt ./...
+	npx prettier --write .
+
+node_modules: package.json package-lock.json
+	npm install
+	@touch node_modules

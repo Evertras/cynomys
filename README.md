@@ -9,7 +9,7 @@ Available as a Docker image: `evertras/cynomys` ([Dockerhub link](https://hub.do
 I got tired of setting up `nc -stuff` on multiple machines and manually trying
 to send data across to ensure a non-trivial network setup was working properly.
 With `cyn`, it can be run quickly and allow me to poke at configurations while
-making sure that connectivity remains (or fails).  There was also a need to test
+making sure that connectivity remains (or fails). There was also a need to test
 broadcast/multicast, which got surprisingly weird with different versions of
 `nc`.
 
@@ -42,7 +42,7 @@ Allow metric collection (Prometheus, etc).
 
 ## How to install it
 
-Binaries are self-contained and available for most major platforms.  Grab
+Binaries are self-contained and available for most major platforms. Grab
 [a native binary from the releases page](https://github.com/Evertras/cynomys/releases).
 
 Run with docker to see available flags.
@@ -53,7 +53,7 @@ docker run --rm -it evertras/cynomys
 
 ## How to use it
 
-For simple use cases, just use command line args.  By convention, lowercase
+For simple use cases, just use command line args. By convention, lowercase
 means listen while uppercase means send.
 
 ```bash
@@ -77,7 +77,7 @@ cyn -U 192.168.58.255:1234
 
 ### Configuration file
 
-A configuration file can be provided.  This is useful when trying to template
+A configuration file can be provided. This is useful when trying to template
 configuration such as with Consul or similar tools.
 
 A full configuration file with all options is given below.
@@ -85,9 +85,9 @@ A full configuration file with all options is given below.
 ```yaml
 # my-cyn-config.yaml
 listen-udp:
-- 192.168.58.4:2345
+  - 192.168.58.4:2345
 send-udp:
-- 192.168.58.3:1234
+  - 192.168.58.3:1234
 ```
 
 The configuration is loaded via file.
