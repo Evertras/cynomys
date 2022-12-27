@@ -1,17 +1,21 @@
 # Cynomys (cyn)
 
-A network diagnostic testing tool to ensure communication behaves as expected.
+A simple network diagnostic testing tool to ensure communication behaves as
+expected.
 
 Available as a Docker image: `evertras/cynomys` ([Dockerhub link](https://hub.docker.com/r/evertras/cynomys))
+
+Available as native binaries: [on releases page](https://github.com/Evertras/cynomys/releases).
 
 ## Why does this exist
 
 I got tired of setting up `nc -stuff` on multiple machines and manually trying
 to send data across to ensure a non-trivial network setup was working properly.
-With `cyn`, it can be run quickly and allow me to poke at configurations while
-making sure that connectivity remains (or fails). There was also a need to test
-broadcast/multicast, which got surprisingly weird with different versions of
-`nc`.
+There was also a need to test broadcast/multicast, which got surprisingly weird
+with multiple versions of `nc`.
+
+Cynomys is intended to allow for simple network communication testing on a
+variety of platforms with simple, consistent behavior.
 
 ## Features
 
@@ -73,6 +77,15 @@ cyn -u :1234
 
 # Broadcast messages from Machine B using the regular UDP sender
 cyn -U 192.168.58.255:1234
+```
+
+Instances that are listening will produce output when they receive messages.
+
+```
+2022/12/27 03:00:39 Read 2 bytes from 192.168.58.4:50372
+2022/12/27 03:00:39 Received: hi
+2022/12/27 03:00:39 Read 2 bytes from 192.168.58.3:54115
+2022/12/27 03:00:39 Received: hi
 ```
 
 ### Configuration file
