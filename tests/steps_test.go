@@ -36,6 +36,15 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	})
 
 	sc.AfterScenario(func(sc *godog.Scenario, err error) {
+		for _, conn := range t.tcpConnections {
+			if err := conn.Close(); err != nil {
+				// TODO: ??
+				panic(err)
+			}
+		}
+
+		t.tcpConnections = nil
+
 		cancelScenario()
 	})
 
@@ -43,11 +52,15 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^cyn is listening for (UDP|TCP) on (.*)$`, t.cynIsListeningFor)
 	sc.Step(`^cyn is sending (UDP|TCP) to (.*)$`, t.cynIsSendingTo)
 	sc.Step(`^cyn is run with no flags or config$`, t.cynIsRunWithoutFlagsOrConfig)
+	sc.Step(`^cyn is run with an unknown flag$`, t.cynIsRunWithAnUnknownFlag)
 	sc.Step(`^cyn is started with the config file$`, t.cynIsRunWithTheConfigFile)
 	sc.Step(`^I wait (\d+) seconds?$`, t.waitSeconds)
 	sc.Step(`^I wait a moment$`, t.waitAMoment)
 	sc.Step(`^there is no output$`, t.thereIsNoOutput)
 	sc.Step(`^I send a UDP packet containing "(.*)" to (.*)$`, t.iSendAUDPPacketContaining)
+	sc.Step(`^I connect with TCP to (.*)$`, t.iConnectWithTCPTo)
+	sc.Step(`^I send "(.*)" over my TCP connection$`, t.iSendOverMyTCPConnection)
+	sc.Step(`^I disconnect my TCP connection$`, t.iDisconnectMyTCPConnection)
 	sc.Step(`^some|the stdout contains "(.*)"$`, t.someStdoutContains)
 	sc.Step(`^some|the stderr contains "(.*)"$`, t.someStderrContains)
 }

@@ -1,18 +1,10 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"time"
-
-	"github.com/evertras/cynomys/tests/captured"
 )
-
-type testContext struct {
-	execCtx context.Context
-	cmds    []*captured.RunningCmd
-}
 
 func (t *testContext) iSendAUDPPacketContaining(data string, addressRaw string) error {
 	addr, err := net.ResolveUDPAddr("udp", addressRaw)
