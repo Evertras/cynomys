@@ -11,6 +11,10 @@ func (t *testContext) cynIsRunWithoutFlagsOrConfig() error {
 	return t.startCynInBackground()
 }
 
+func (t *testContext) cynIsRunWithAnUnknownFlag() error {
+	return t.startCynInBackground("--thisdoesntexist")
+}
+
 func (t *testContext) cynIsRunWithTheConfigFile() error {
 	return t.startCynInBackground("--config-file", configFileLocation)
 }
