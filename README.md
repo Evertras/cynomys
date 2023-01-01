@@ -113,6 +113,8 @@ listen-tcp:
   - 192.168.58.4:2346
 send-udp:
   - 192.168.58.3:1234
+send-tcp:
+  - 192.168.58.3:1235
 ```
 
 The configuration is loaded via file.
