@@ -17,12 +17,14 @@ import (
 
 var (
 	listenOnUDPList []string
+	listenOnTCPList []string
 	sendUDPToList   []string
 	configFilePath  string
 )
 
 func init() {
 	rootCmd.Flags().StringSliceVarP(&listenOnUDPList, "listen-udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
+	rootCmd.Flags().StringSliceVarP(&listenOnTCPList, "listen-tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
 	rootCmd.Flags().StringSliceVarP(&sendUDPToList, "send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
 	rootCmd.Flags().StringVarP(&configFilePath, "config-file", "c", "", "A file path to load as additional configuration.")
 }
@@ -43,11 +45,14 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("failed to read config %q: %w", configFilePath, err)
 			}
 
-			extraUdpListeners := viper.GetStringSlice("listen-udp")
-			listenOnUDPList = append(listenOnUDPList, extraUdpListeners...)
+			extraUDPListeners := viper.GetStringSlice("listen-udp")
+			listenOnUDPList = append(listenOnUDPList, extraUDPListeners...)
 
-			extraUdpSenders := viper.GetStringSlice("send-udp")
-			sendUDPToList = append(sendUDPToList, extraUdpSenders...)
+			extraTCPListeners := viper.GetStringSlice("listen-tcp")
+			listenOnUDPList = append(listenOnUDPList, extraTCPListeners...)
+
+			extraUDPSenders := viper.GetStringSlice("send-udp")
+			sendUDPToList = append(sendUDPToList, extraUDPSenders...)
 		}
 
 		eg := errgroup.Group{}
@@ -63,6 +68,21 @@ var rootCmd = &cobra.Command{
 
 			eg.Go(func() error {
 				l := listener.NewUDP(*addr)
+
+				return l.Listen()
+			})
+		}
+
+		for _, listenOnTCP := range listenOnTCPList {
+			count++
+			addr, err := net.ResolveTCPAddr("tcp", listenOnTCP)
+
+			if err != nil {
+				return fmt.Errorf("net.ResolveTCPAddr for %q: %w", listenOnTCP, err)
+			}
+
+			eg.Go(func() error {
+				l := listener.NewTCP(*addr)
 
 				return l.Listen()
 			})

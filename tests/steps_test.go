@@ -36,6 +36,15 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	})
 
 	sc.AfterScenario(func(sc *godog.Scenario, err error) {
+		for _, conn := range t.tcpConnections {
+			if err := conn.Close(); err != nil {
+				// TODO: ??
+				panic(err)
+			}
+		}
+
+		t.tcpConnections = nil
+
 		cancelScenario()
 	})
 
@@ -48,6 +57,9 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^I wait a moment$`, t.waitAMoment)
 	sc.Step(`^there is no output$`, t.thereIsNoOutput)
 	sc.Step(`^I send a UDP packet containing "(.*)" to (.*)$`, t.iSendAUDPPacketContaining)
+	sc.Step(`^I connect with TCP to (.*)$`, t.iConnectWithTCPTo)
+	sc.Step(`^I send "(.*)" over my TCP connection$`, t.iSendOverMyTCPConnection)
+	sc.Step(`^I disconnect my TCP connection$`, t.iDisconnectMyTCPConnection)
 	sc.Step(`^some|the stdout contains "(.*)"$`, t.someStdoutContains)
 	sc.Step(`^some|the stderr contains "(.*)"$`, t.someStderrContains)
 }
