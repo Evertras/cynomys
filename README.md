@@ -26,12 +26,10 @@ the machines can talk to each other as expected.
 
 Test broadcast/multicast (UDP).
 
+Test connectivity and communication with TCP.
+
 Use in a Docker container for Docker-related networking, or just use the raw
 binary for native level testing.
-
-### In progress
-
-Test connectivity with TCP.
 
 ### Future
 
@@ -61,14 +59,26 @@ For simple use cases, just use command line args. By convention, lowercase
 means listen while uppercase means send.
 
 ```bash
+# In this example:
+# Machine A is listening on UDP on :1234 and TCP on :5555. It sends UDP to B and C.
+# Machine B sends both UDP and TCP to Machine A, and UDP to C.
+# Machine C only sends UDP to A and B.
+
 # On Machine A - 192.168.58.2
-cyn --listen-udp 192.168.58.2:1234 --send-udp 192.168.58.3:3456 --send-udp 192.168.58.4:3456
+cyn --listen-udp 192.168.58.2:1234 \
+    --listen-tcp 192.168.58.2:5555 \
+    --send-udp 192.168.58.3:3456 \
+    --send-udp 192.168.58.4:3456
 
 # On Machine B - 192.168.58.3 (shorthand flags)
-cyn -u 192.168.58.3:2345 -U 192.168.58.2:1234 -U 192.168.58.4:3456
+cyn -u 192.168.58.3:2345 \
+    -T 192.168.58.3:5555 \
+    -U 192.168.58.2:1234 \
+    -U 192.168.58.4:3456
 
 # On Machine C - 192.168.58.4 (mixed)
-cyn -u 192.168.58.4:3456 --send-udp 192.168.58.2:2345
+cyn -u 192.168.58.4:3456 \
+    --send-udp 192.168.58.2:2345
 ```
 
 ```bash
@@ -99,6 +109,8 @@ A full configuration file with all options is given below.
 # my-cyn-config.yaml
 listen-udp:
   - 192.168.58.4:2345
+listen-tcp:
+  - 192.168.58.4:2346
 send-udp:
   - 192.168.58.3:1234
 ```
