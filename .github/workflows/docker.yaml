@@ -17,8 +17,10 @@ jobs:
         with:
           username: evertras
           password: ${{ secrets.DOCKER_API_KEY }}
+      - name: Set environment variables
+        run: echo "EVERTRAS_PUBLISHED_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: evertras/cynomys:${GITHUB_REF##*/},evertras/cynomys:latest
+          tags: evertras/cynomys:${{ env.EVERTRAS_PUBLISHED_VERSION }},evertras/cynomys:latest
