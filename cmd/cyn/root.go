@@ -51,7 +51,7 @@ var rootCmd = &cobra.Command{
 			listenOnUDPList = append(listenOnUDPList, extraUDPListeners...)
 
 			extraTCPListeners := viper.GetStringSlice("listen-tcp")
-			listenOnUDPList = append(listenOnUDPList, extraTCPListeners...)
+			listenOnTCPList = append(listenOnTCPList, extraTCPListeners...)
 
 			extraUDPSenders := viper.GetStringSlice("send-udp")
 			sendUDPToList = append(sendUDPToList, extraUDPSenders...)
