@@ -21,6 +21,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags:
-            - evertras/cynomys:${GITHUB_REF##*/}
-            - evertras/cynomys:latest
+          tags: evertras/cynomys:${GITHUB_REF##*/},evertras/cynomys:latest
