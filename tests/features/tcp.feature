@@ -14,6 +14,26 @@ Feature: send and receive TCP
     Then the stdout contains "connected"
     And the stdout contains "hi"
 
+  Scenario: the connection is closed
+    Given I run cyn -t 127.0.0.1:15236
+    And I run cyn -T 127.0.0.1:15236 -i 10ms
+    When I wait a moment
+    And I stop process #1
+    And I wait a moment
+    Then the stdout contains "broken pipe"
+
+  Scenario: the connection is reset
+    Given I run cyn -t 127.0.0.1:15236
+    And I run cyn -T 127.0.0.1:15236 -i 10ms
+    When I wait a moment
+    And I stop process #1
+    And I wait a moment
+    And I run cyn -t 127.0.0.1:15236
+    And I wait a moment
+    And I reset the output
+    And I wait 1 second
+    Then the stdout does not contain "broken pipe"
+
   Scenario: an instance is set to call itself via config file
     Given a configuration file that contains:
       """

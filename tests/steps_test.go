@@ -62,4 +62,7 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^I disconnect my TCP connection$`, t.iDisconnectMyTCPConnection)
 	sc.Step(`^some|the stdout contains "(.*)"$`, t.someStdoutContains)
 	sc.Step(`^some|the stderr contains "(.*)"$`, t.someStderrContains)
+	sc.Step(`^the stdout does not contain "(.*)"$`, t.noStdoutContains)
+	sc.Step(`^I reset the output$`, t.iResetTheOutput)
+	sc.Step(`^I stop process #(\d+)$`, t.iStopProcess)
 }

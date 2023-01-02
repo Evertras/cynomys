@@ -54,3 +54,30 @@ func (t *testContext) startCynInBackground(args ...string) error {
 
 	return nil
 }
+
+func (t *testContext) iStopProcess(index int) error {
+	// 1-indexed
+	index--
+
+	if len(t.cmds) <= index {
+		return fmt.Errorf("bad test: only have %d commands run but wanted to stop #%d", len(t.cmds), index+1)
+	}
+
+	cmd := t.cmds[index]
+
+	err := cmd.Stop()
+
+	if err != nil {
+		return fmt.Errorf("cmd.Stop: %w", err)
+	}
+
+	return nil
+}
+
+func (t *testContext) iResetTheOutput() error {
+	for _, cmd := range t.cmds {
+		cmd.ResetOutput()
+	}
+
+	return nil
+}

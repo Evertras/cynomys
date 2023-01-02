@@ -66,3 +66,15 @@ func (t *testContext) someStderrContains(output string) error {
 
 	return fmt.Errorf("failed to find %q in any stderr output", output)
 }
+
+func (t *testContext) noStdoutContains(output string) error {
+	for i, cmd := range t.cmds {
+		stdout := cmd.Stdout()
+
+		if strings.Contains(stdout, output) {
+			return fmt.Errorf("found %q in process #%d", output, i+1)
+		}
+	}
+
+	return nil
+}

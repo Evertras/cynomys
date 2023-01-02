@@ -38,6 +38,8 @@ func (s *TCPSender) Send(data []byte) error {
 	_, err := s.conn.Write(data)
 
 	if err != nil {
+		_ = s.conn.Close()
+		s.conn = nil
 		return fmt.Errorf("s.conn.Write: %w", err)
 	}
 
