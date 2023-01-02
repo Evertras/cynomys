@@ -10,6 +10,8 @@ builds:
       - darwin
     main: ./cmd/cyn
     binary: cyn
+    ldflags:
+      - github.com/evertras/cynomys/cmd/cyn/cmds.BuildVersion=v{{ .Version }}
 checksum:
   name_template: "checksums.txt"
 snapshot:
