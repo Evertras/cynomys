@@ -9,7 +9,7 @@ Feature: send and receive TCP
 
   Scenario: one listen one send (shorthand flags)
     Given I run cyn -t 127.0.0.1:15235
-    And I run cyn -T 127.0.0.1:15235 --send-interval 10ms
+    And I run cyn -T 127.0.0.1:15235 -i 10ms
     When I wait a moment
     Then the stdout contains "connected"
     And the stdout contains "hi"
