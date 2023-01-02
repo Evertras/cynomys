@@ -21,6 +21,7 @@ var (
 	sendUDPToList   []string
 	sendTCPToList   []string
 	configFilePath  string
+	sendInterval    time.Duration
 )
 
 func init() {
@@ -29,6 +30,7 @@ func init() {
 	rootCmd.Flags().StringSliceVarP(&sendUDPToList, "send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
 	rootCmd.Flags().StringSliceVarP(&sendTCPToList, "send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
 	rootCmd.Flags().StringVarP(&configFilePath, "config-file", "c", "", "A file path to load as additional configuration.")
+	rootCmd.Flags().DurationVarP(&sendInterval, "send-interval", "i", time.Second, "How long to wait between attempting to send data")
 }
 
 var rootCmd = &cobra.Command{
@@ -112,7 +114,7 @@ var rootCmd = &cobra.Command{
 					if err != nil {
 						log.Printf("Failed to send to %q: %v", sendUDPTo, err)
 					}
-					time.Sleep(time.Second)
+					time.Sleep(sendInterval)
 				}
 			})
 		}
@@ -138,7 +140,7 @@ var rootCmd = &cobra.Command{
 					if err != nil {
 						log.Printf("Failed to send to %q: %v", sendTCPTo, err)
 					}
-					time.Sleep(time.Second)
+					time.Sleep(sendInterval)
 				}
 			})
 		}

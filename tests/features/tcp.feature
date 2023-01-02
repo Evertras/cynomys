@@ -9,8 +9,8 @@ Feature: send and receive TCP
 
   Scenario: one listen one send (shorthand flags)
     Given I run cyn -t 127.0.0.1:15235
-    And I run cyn -T 127.0.0.1:15235
-    When I wait 2 seconds
+    And I run cyn -T 127.0.0.1:15235 -i 10ms
+    When I wait a moment
     Then the stdout contains "connected"
     And the stdout contains "hi"
 
@@ -21,7 +21,8 @@ Feature: send and receive TCP
         - 127.0.0.1:24568
       send-tcp:
         - 127.0.0.1:24568
+      send-interval: 10ms
       """
     And cyn is started with the config file
-    When I wait 2 seconds
+    When I wait 1 second
     Then the stdout contains "hi"

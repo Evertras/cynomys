@@ -28,6 +28,8 @@ Test broadcast/multicast (UDP).
 
 Test connectivity and communication with TCP.
 
+Customizable interval to send data.
+
 Use in a Docker container for Docker-related networking, or just use the raw
 binary for native level testing.
 
@@ -37,8 +39,6 @@ Test that connectivity is NOT made between different machines that should not
 talk to each other, for firewall/security reasons.
 
 Customizable data to send.
-
-Customizable intervals.
 
 Allow metric collection (Prometheus, etc).
 
@@ -76,9 +76,10 @@ cyn -u 192.168.58.3:2345 \
     -U 192.168.58.2:1234 \
     -U 192.168.58.4:3456
 
-# On Machine C - 192.168.58.4 (mixed)
+# On Machine C - 192.168.58.4 (mixed, 1 minute send interval)
 cyn -u 192.168.58.4:3456 \
-    --send-udp 192.168.58.2:2345
+    --send-udp 192.168.58.2:2345 \
+    --send-interval 1m
 ```
 
 ```bash
@@ -115,6 +116,7 @@ send-udp:
   - 192.168.58.3:1234
 send-tcp:
   - 192.168.58.3:1235
+send-interval: 30s
 ```
 
 The configuration is loaded via file.
