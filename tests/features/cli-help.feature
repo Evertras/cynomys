@@ -15,5 +15,5 @@ Feature: run to trigger CLI information
     Then the stderr contains "Usage"
 
   Scenario: get version
-    Given cyn is run with the version command
+    Given I run cyn version
     Then the stdout contains "dev"
