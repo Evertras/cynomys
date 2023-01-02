@@ -1,6 +1,7 @@
-Feature: run to trigger CLI help
+Feature: run to trigger CLI information
   In order to use cyn more easily
-  Cyn should provide help text when run with incorrect configurations
+  Cyn should provide help text when run with incorrect configurations or
+  when prompted to do so
 
   Scenario: run with no flags or config
     Given cyn is run with no flags or config
@@ -12,3 +13,7 @@ Feature: run to trigger CLI help
     Given cyn is run with an unknown flag
     When I wait a moment
     Then the stderr contains "Usage"
+
+  Scenario: get version
+    Given cyn is run with the version command
+    Then the stdout contains "dev"

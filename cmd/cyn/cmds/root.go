@@ -1,4 +1,4 @@
-package main
+package cmds
 
 import (
 	"fmt"
@@ -149,4 +149,8 @@ var rootCmd = &cobra.Command{
 
 		return eg.Wait()
 	},
+}
+
+func Execute() error {
+	return rootCmd.Execute()
 }
