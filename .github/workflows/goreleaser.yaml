@@ -25,7 +25,5 @@ jobs:
           distribution: goreleaser
           version: latest
           args: release --rm-dist
-          ldflags:
-            - github.com/evertras/cynomys/cmd/cyn/cmds.BuildVersion=v{{ .Version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
