@@ -23,6 +23,6 @@ Feature: send and receive TCP
         - 127.0.0.1:24568
       send-interval: 10ms
       """
-    And cyn is started with the config file
-    When I wait 1 second
+    When cyn is started with the config file
+    And I wait 1 second
     Then the stdout contains "hi"

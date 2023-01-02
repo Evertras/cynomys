@@ -15,6 +15,7 @@ Vagrant.configure("2") do |config|
     cynb.vm.hostname = "cynb"
     cynb.vm.network "private_network", ip: "192.168.58.3"
   end
+
   # If we really need it, uncomment this...
   #config.vm.define "cync" do |cync|
     #cync.vm.hostname = "cync"
