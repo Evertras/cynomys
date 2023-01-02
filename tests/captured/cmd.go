@@ -27,6 +27,13 @@ func (c *capturedOutput) Write(data []byte) (n int, err error) {
 	return len(data), nil
 }
 
+func (c *capturedOutput) reset() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.data = make([]byte, 0, 1024)
+}
+
 type RunningCmd struct {
 	cmd    *exec.Cmd
 	stdout *capturedOutput
@@ -54,6 +61,20 @@ func StartInBackground(ctx context.Context, command string, args ...string) (*Ru
 	return r, nil
 }
 
+func (r *RunningCmd) Stop() error {
+	if r == nil || r.cmd == nil {
+		return fmt.Errorf("cmd is nil")
+	}
+
+	err := r.cmd.Process.Kill()
+
+	if err != nil {
+		return fmt.Errorf("process.Kill: %w", err)
+	}
+
+	return nil
+}
+
 func (r *RunningCmd) Stdout() string {
 	r.stdout.mu.Lock()
 	defer r.stdout.mu.Unlock()
@@ -70,4 +91,9 @@ func (r *RunningCmd) Stderr() string {
 	output := string(r.stderr.data)
 
 	return output
+}
+
+func (r *RunningCmd) ResetOutput() {
+	r.stdout.reset()
+	r.stderr.reset()
 }
