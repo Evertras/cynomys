@@ -24,3 +24,5 @@ jobs:
         with:
           push: true
           tags: evertras/cynomys:${{ env.EVERTRAS_PUBLISHED_VERSION }},evertras/cynomys:latest
+          build-args: |
+            BUILD_VERSION=${{ env.EVERTRAS_PUBLISHED_VERSION }}
