@@ -23,6 +23,5 @@ Feature: send and receive UDP
         - 127.0.0.1:14568
       send-interval: 10ms
       """
-    And cyn is started with the config file
-    When I wait 1 second
+    When cyn is started with the config file
     Then the stdout contains "hi"
