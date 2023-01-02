@@ -24,4 +24,5 @@ Feature: send and receive UDP
       send-interval: 10ms
       """
     When cyn is started with the config file
+    And I wait 1 second
     Then the stdout contains "hi"
