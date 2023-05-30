@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 
+	"github.com/evertras/cynomys/pkg/httpserver"
 	"github.com/evertras/cynomys/pkg/listener"
 	"github.com/evertras/cynomys/pkg/sender"
 )
@@ -21,6 +22,9 @@ var config struct {
 	SendUDP      []string      `mapstructure:"send-udp"`
 	SendTCP      []string      `mapstructure:"send-tcp"`
 	SendInterval time.Duration `mapstructure:"send-interval"`
+	HTTPServer   struct {
+		Address string `mapstructure:"address"`
+	} `mapstructure:"http"`
 }
 
 var (
@@ -40,6 +44,7 @@ func init() {
 	flags.StringSliceP("send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
 	flags.StringSliceP("send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
 	flags.DurationP("send-interval", "i", time.Second, "How long to wait between attempting to send data")
+	flags.String("http.address", "", "An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'")
 
 	viper.BindPFlags(flags)
 }
@@ -65,10 +70,23 @@ func initConfig() {
 var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		eg := errgroup.Group{}
-		count := 0
+
+		if config.HTTPServer.Address != "" {
+			log.Printf("Hosting on http://%s", config.HTTPServer.Address)
+
+			server := httpserver.NewServer(httpserver.Config{
+				Addr: config.HTTPServer.Address,
+			})
+
+			eg.Go(func() error {
+				return server.ServeAndListen()
+			})
+		}
+
+		listenOrSendCount := 0
 
 		for _, listenOnUDP := range config.ListenUDP {
-			count++
+			listenOrSendCount++
 			addr, err := net.ResolveUDPAddr("udp", listenOnUDP)
 
 			if err != nil {
@@ -83,7 +101,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		for _, listenOnTCP := range config.ListenTCP {
-			count++
+			listenOrSendCount++
 			addr, err := net.ResolveTCPAddr("tcp", listenOnTCP)
 
 			if err != nil {
@@ -98,7 +116,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		for _, sendUDPTo := range config.SendUDP {
-			count++
+			listenOrSendCount++
 			addr, err := net.ResolveUDPAddr("udp", sendUDPTo)
 
 			if err != nil {
@@ -124,7 +142,7 @@ var rootCmd = &cobra.Command{
 		// We could probably generalize this a bit better, but it's short enough
 		// not to care for now.
 		for _, sendTCPTo := range config.SendTCP {
-			count++
+			listenOrSendCount++
 			addr, err := net.ResolveTCPAddr("tcp", sendTCPTo)
 
 			if err != nil {
@@ -147,7 +165,7 @@ var rootCmd = &cobra.Command{
 			})
 		}
 
-		if count == 0 {
+		if listenOrSendCount == 0 {
 			return fmt.Errorf("no listeners or senders specified")
 		}
 

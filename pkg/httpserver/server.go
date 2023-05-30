@@ -1,6 +1,9 @@
 package httpserver
 
-import "net/http"
+import (
+	"io/fs"
+	"net/http"
+)
 
 type Server struct {
 	server *http.Server
@@ -12,6 +15,12 @@ type Config struct {
 
 func NewServer(config Config) *Server {
 	s := http.NewServeMux()
+
+	siteFiles, err := fs.Sub(siteFilesRaw, "site")
+
+	if err != nil {
+		panic(err)
+	}
 
 	s.Handle("/", http.FileServer(http.FS(siteFiles)))
 
