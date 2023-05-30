@@ -46,3 +46,18 @@ Feature: send and receive TCP
     When cyn is started with the config file
     And I wait 1 second
     Then the stdout contains "hi"
+
+  Scenario: an instance is set to call itself via config file and the send interval is set via env variable
+    Given a configuration file that contains:
+      """
+      listen-tcp:
+        - 127.0.0.1:24568
+      send-tcp:
+        - 127.0.0.1:24568
+      """
+    And the environment variable CYNOMYS_SEND_INTERVAL is set to "10ms"
+    When cyn is started with the config file
+    And I wait a moment
+    And I reset the output
+    And I wait a moment
+    Then the stdout contains "hi"

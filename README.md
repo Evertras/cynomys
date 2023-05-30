@@ -101,7 +101,12 @@ Instances that are listening will produce output when they receive messages.
 2022/12/27 03:00:39 Received: hi
 ```
 
-### Configuration file
+### Configuration
+
+Configuration is available through command line flags, a configuration file,
+and/or environment variables.
+
+#### Configuration File
 
 A configuration file can be provided. This is useful when trying to template
 configuration such as with Consul or similar tools.
@@ -121,13 +126,51 @@ send-tcp:
 send-interval: 30s
 ```
 
-The configuration is loaded via file.
+The configuration file must be supplied with the `--config/-c` command line
+flag.
 
 ```bash
 cyn --config ./my-cyn-config.yaml
 
 # Can also use -c for shorthand
 cyn -c ./my-cyn-config.yaml
+```
+
+### Command line flags
+
+All available flags can be seen by running `cyn --help`. This README snippet should
+have the latest, but when in doubt, just run the command to check.
+
+```bash
+✔ cyn --help
+Usage:
+   [flags]
+   [command]
+
+Available Commands:
+  help        Help about any command
+  version     Displays the version
+
+Flags:
+  -c, --config-file string       A file path to load as additional configuration.
+  -h, --help                     help for this command
+  -t, --listen-tcp strings       An IP:port address to listen on for TCP.  Can be specified multiple times.
+  -u, --listen-udp strings       An IP:port address to listen on for UDP.  Can be specified multiple times.
+  -i, --send-interval duration   How long to wait between attempting to send data (default 1s)
+  -T, --send-tcp strings         An IP:port address to send to (TCP).  Can be specified multiple times.
+  -U, --send-udp strings         An IP:port address to send to (UDP).  Can be specified multiple times.
+
+Use " [command] --help" for more information about a command.
+```
+
+### Environment variables
+
+Configuration can be supplied throuh environment variables that follow the
+`CYNOMYS_VAR_NAME` pattern, replacing `-` with `_`. For example:
+
+```bash
+export CYNOMYS_SEND_INTERVAL=500ms
+cyn -T 192.168.58.3:1234
 ```
 
 ## Why the name

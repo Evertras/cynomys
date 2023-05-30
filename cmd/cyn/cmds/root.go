@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -47,6 +48,10 @@ func initConfig() {
 	if configFilePath != "" {
 		viper.SetConfigFile(configFilePath)
 	}
+
+	viper.SetEnvPrefix("CYNOMYS")
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	viper.AutomaticEnv()
 
 	viper.ReadInConfig()
 
