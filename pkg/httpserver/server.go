@@ -14,6 +14,11 @@ type Config struct {
 }
 
 func NewServer(config Config) *Server {
+	// Config sanity checks
+	if config.Addr == "" {
+		panic("HTTP server address not given in config")
+	}
+
 	s := http.NewServeMux()
 
 	siteFiles, err := fs.Sub(siteFilesRaw, "site")
@@ -23,10 +28,6 @@ func NewServer(config Config) *Server {
 	}
 
 	s.Handle("/", http.FileServer(http.FS(siteFiles)))
-
-	if config.Addr == "" {
-		panic("HTTP server address not given in config")
-	}
 
 	return &Server{
 		server: &http.Server{
