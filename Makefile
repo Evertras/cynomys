@@ -26,7 +26,7 @@ test:
 
 .PHONY: bdd
 bdd: bin/cyn
-	go test -race -v ./tests/...
+	go test -race -v ./tests
 
 .PHONY: fmt
 fmt: node_modules
