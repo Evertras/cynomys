@@ -24,15 +24,13 @@ func NewServer(config Config) *Server {
 
 	s.Handle("/", http.FileServer(http.FS(siteFiles)))
 
-	addr := ":8786"
-
-	if config.Addr != "" {
-		addr = config.Addr
+	if config.Addr == "" {
+		panic("HTTP server address not given in config")
 	}
 
 	return &Server{
 		server: &http.Server{
-			Addr:    addr,
+			Addr:    config.Addr,
 			Handler: s,
 		},
 	}
