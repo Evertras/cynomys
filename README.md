@@ -42,6 +42,8 @@ Customizable data to send.
 
 Allow metric collection (Prometheus, etc).
 
+Optional self-hosted web page that shows realtime statistics.
+
 ## How to install it
 
 Binaries are self-contained and available for most major platforms. Grab
