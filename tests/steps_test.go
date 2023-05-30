@@ -26,24 +26,21 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	var scenarioCtx context.Context
 	var cancelScenario context.CancelFunc
 
-	t := testContext{}
+	t := newTestContext()
 
 	sc.BeforeScenario(func(sc *godog.Scenario) {
 		scenarioCtx, cancelScenario = context.WithCancel(context.Background())
 
 		t.execCtx = scenarioCtx
-		t.cmds = nil
 	})
 
 	sc.AfterScenario(func(sc *godog.Scenario, err error) {
-		for _, conn := range t.tcpConnections {
-			if err := conn.Close(); err != nil {
-				// TODO: ??
-				panic(err)
-			}
-		}
+		err = t.cleanup()
 
-		t.tcpConnections = nil
+		if err != nil {
+			// TODO: ??
+			panic(err)
+		}
 
 		cancelScenario()
 	})
@@ -65,4 +62,5 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^the stdout does not contain "(.*)"$`, t.noStdoutContains)
 	sc.Step(`^I reset the output$`, t.iResetTheOutput)
 	sc.Step(`^I stop process #(\d+)$`, t.iStopProcess)
+	sc.Step(`^the environment variable (.*) is set to "(.*)"$`, t.envVarIsSet)
 }
