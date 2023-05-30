@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -15,57 +14,55 @@ import (
 	"github.com/evertras/cynomys/pkg/sender"
 )
 
+var config struct {
+	ListenUDP    []string      `mapstructure:"listen-udp"`
+	ListenTCP    []string      `mapstructure:"listen-tcp"`
+	SendUDP      []string      `mapstructure:"send-udp"`
+	SendTCP      []string      `mapstructure:"send-tcp"`
+	SendInterval time.Duration `mapstructure:"send-interval"`
+}
+
 var (
-	listenOnUDPList []string
-	listenOnTCPList []string
-	sendUDPToList   []string
-	sendTCPToList   []string
-	configFilePath  string
-	sendInterval    time.Duration
+	configFilePath string
 )
 
 func init() {
-	rootCmd.Flags().StringSliceVarP(&listenOnUDPList, "listen-udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
-	rootCmd.Flags().StringSliceVarP(&listenOnTCPList, "listen-tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
-	rootCmd.Flags().StringSliceVarP(&sendUDPToList, "send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
-	rootCmd.Flags().StringSliceVarP(&sendTCPToList, "send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
-	rootCmd.Flags().StringVarP(&configFilePath, "config-file", "c", "", "A file path to load as additional configuration.")
-	rootCmd.Flags().DurationVarP(&sendInterval, "send-interval", "i", time.Second, "How long to wait between attempting to send data")
+	cobra.OnInitialize(initConfig)
+
+	flags := rootCmd.Flags()
+
+	// Special flag for config
+	flags.StringVarP(&configFilePath, "config-file", "c", "", "A file path to load as additional configuration.")
+
+	flags.StringSliceP("listen-udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
+	flags.StringSliceP("listen-tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
+	flags.StringSliceP("send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
+	flags.StringSliceP("send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
+	flags.DurationP("send-interval", "i", time.Second, "How long to wait between attempting to send data")
+
+	viper.BindPFlags(flags)
+}
+
+func initConfig() {
+	if configFilePath != "" {
+		viper.SetConfigFile(configFilePath)
+	}
+
+	viper.ReadInConfig()
+
+	err := viper.Unmarshal(&config)
+
+	if err != nil {
+		log.Fatalf("failed to unmarshal config: %v", err)
+	}
 }
 
 var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if configFilePath != "" {
-			file, err := os.Open(configFilePath)
-
-			if err != nil {
-				return fmt.Errorf("failed to open config file %q: %w", configFilePath, err)
-			}
-
-			viper.SetConfigType("yaml")
-			err = viper.ReadConfig(file)
-
-			if err != nil {
-				return fmt.Errorf("failed to read config %q: %w", configFilePath, err)
-			}
-
-			extraUDPListeners := viper.GetStringSlice("listen-udp")
-			listenOnUDPList = append(listenOnUDPList, extraUDPListeners...)
-
-			extraTCPListeners := viper.GetStringSlice("listen-tcp")
-			listenOnTCPList = append(listenOnTCPList, extraTCPListeners...)
-
-			extraUDPSenders := viper.GetStringSlice("send-udp")
-			sendUDPToList = append(sendUDPToList, extraUDPSenders...)
-
-			extraTCPSenders := viper.GetStringSlice("send-tcp")
-			sendTCPToList = append(sendTCPToList, extraTCPSenders...)
-		}
-
 		eg := errgroup.Group{}
 		count := 0
 
-		for _, listenOnUDP := range listenOnUDPList {
+		for _, listenOnUDP := range config.ListenUDP {
 			count++
 			addr, err := net.ResolveUDPAddr("udp", listenOnUDP)
 
@@ -80,7 +77,7 @@ var rootCmd = &cobra.Command{
 			})
 		}
 
-		for _, listenOnTCP := range listenOnTCPList {
+		for _, listenOnTCP := range config.ListenTCP {
 			count++
 			addr, err := net.ResolveTCPAddr("tcp", listenOnTCP)
 
@@ -95,7 +92,7 @@ var rootCmd = &cobra.Command{
 			})
 		}
 
-		for _, sendUDPTo := range sendUDPToList {
+		for _, sendUDPTo := range config.SendUDP {
 			count++
 			addr, err := net.ResolveUDPAddr("udp", sendUDPTo)
 
@@ -114,14 +111,14 @@ var rootCmd = &cobra.Command{
 					if err != nil {
 						log.Printf("Failed to send to %q: %v", sendUDPTo, err)
 					}
-					time.Sleep(sendInterval)
+					time.Sleep(config.SendInterval)
 				}
 			})
 		}
 
 		// We could probably generalize this a bit better, but it's short enough
 		// not to care for now.
-		for _, sendTCPTo := range sendTCPToList {
+		for _, sendTCPTo := range config.SendTCP {
 			count++
 			addr, err := net.ResolveTCPAddr("tcp", sendTCPTo)
 
@@ -140,7 +137,7 @@ var rootCmd = &cobra.Command{
 					if err != nil {
 						log.Printf("Failed to send to %q: %v", sendTCPTo, err)
 					}
-					time.Sleep(sendInterval)
+					time.Sleep(config.SendInterval)
 				}
 			})
 		}
