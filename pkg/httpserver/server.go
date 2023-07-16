@@ -1,8 +1,9 @@
 package httpserver
 
 import (
-	"io/fs"
 	"net/http"
+
+	"github.com/evertras/gonsen"
 )
 
 type Server struct {
@@ -21,13 +22,13 @@ func NewServer(config Config) *Server {
 
 	s := http.NewServeMux()
 
-	siteFiles, err := fs.Sub(siteFilesRaw, "site")
+	source := gonsen.NewSource(siteFilesRaw)
 
-	if err != nil {
-		panic(err)
-	}
+	pageIndex := gonsen.NewPage(source, "index.html", func(r *http.Request) (IndexData, int) {
+		return IndexData{}, http.StatusOK
+	})
 
-	s.Handle("/", http.FileServer(http.FS(siteFiles)))
+	s.Handle("/", pageIndex)
 
 	return &Server{
 		server: &http.Server{

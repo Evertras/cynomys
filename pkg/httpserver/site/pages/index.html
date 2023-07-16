@@ -1,0 +1,25 @@
+{{ define "body" }}
+<h2>TCP Listeners</h2>
+<table>
+  <thead>
+    <th>Bind Address</th>
+  </thead>
+  <tbody>
+{{ range $listener := .Data.ListenersTCP }}
+    <tr>{{ .Address }}</tr>
+{{ end }}
+  </tbody>
+</table>
+
+<h2>UDP Listeners</h2>
+<table>
+  <thead>
+    <th>Bind Address</th>
+  </thead>
+  <tbody>
+{{ range $listener := .Data.ListenersUDP }}
+    <tr>{{ .Address }}</tr>
+{{ end }}
+  </tbody>
+</table>
+{{ end }}

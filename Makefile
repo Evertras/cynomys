@@ -9,6 +9,8 @@ bin/cyn: \
 	./cmd/cyn/*.go \
 	./cmd/cyn/cmds/*.go \
 	./pkg/httpserver/*.go \
+	./pkg/httpserver/site/*.html \
+	./pkg/httpserver/site/pages/*.html \
 	./pkg/listener/*.go \
 	./pkg/sender/*.go
 	CGO_ENABLED=0 go build -o bin/cyn ./cmd/cyn/*.go
