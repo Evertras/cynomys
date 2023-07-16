@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -35,11 +36,23 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	})
 
 	sc.AfterScenario(func(sc *godog.Scenario, err error) {
-		err = t.cleanup()
-
 		if err != nil {
+			for i, cmd := range t.cmds {
+				fmt.Printf("Process #%d", i)
+				fmt.Println("vvvv STDOUT DUMP vvvv")
+				fmt.Println(cmd.Stdout())
+				fmt.Println("^^^^ STDOUT DUMP ^^^^")
+				fmt.Println("")
+				fmt.Println("vvvv STDERR DUMP vvvv")
+				fmt.Println(cmd.Stderr())
+				fmt.Println("^^^^ STDERR DUMP ^^^^")
+			}
+		}
+		cleanupErr := t.cleanup()
+
+		if cleanupErr != nil {
 			// TODO: ??
-			panic(err)
+			panic(cleanupErr)
 		}
 
 		cancelScenario()
@@ -63,4 +76,5 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^I reset the output$`, t.iResetTheOutput)
 	sc.Step(`^I stop process #(\d+)$`, t.iStopProcess)
 	sc.Step(`^the environment variable (.*) is set to "(.*)"$`, t.envVarIsSet)
+	sc.Step(`the page at (.*) contains "(.*)"`, t.thePageAtContains)
 }

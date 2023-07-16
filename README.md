@@ -33,7 +33,12 @@ Customizable interval to send data.
 Use in a Docker container for Docker-related networking, or just use the raw
 binary for native level testing.
 
+Optional HTTP server that provides a simple landing page to show current
+status and configuration of the given `cyn` instance.
+
 ### Future
+
+These will be converted to issues in the future, but some other ideas...
 
 Test that connectivity is NOT made between different machines that should not
 talk to each other, for firewall/security reasons.
@@ -42,7 +47,7 @@ Customizable data to send.
 
 Allow metric collection (Prometheus, etc).
 
-Optional self-hosted web page that shows realtime statistics.
+Realtime streaming updates for the HTML view.
 
 ## How to install it
 
@@ -124,6 +129,8 @@ send-udp:
 send-tcp:
   - 192.168.58.3:1235
 send-interval: 30s
+http:
+  address: 127.0.0.1:8080
 ```
 
 The configuration file must be supplied with the `--config/-c` command line
@@ -154,6 +161,7 @@ Available Commands:
 Flags:
   -c, --config-file string       A file path to load as additional configuration.
   -h, --help                     help for this command
+      --http.address string      An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'
   -t, --listen-tcp strings       An IP:port address to listen on for TCP.  Can be specified multiple times.
   -u, --listen-udp strings       An IP:port address to listen on for UDP.  Can be specified multiple times.
   -i, --send-interval duration   How long to wait between attempting to send data (default 1s)
