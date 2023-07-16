@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/evertras/cynomys/pkg/cyn"
-	"github.com/evertras/cynomys/pkg/httpserver"
 	"github.com/evertras/cynomys/pkg/listener"
 	"github.com/evertras/cynomys/pkg/sender"
 )
@@ -78,11 +77,7 @@ var rootCmd = &cobra.Command{
 		if config.HTTPServer.Address != "" {
 			log.Printf("Hosting on http://%s", config.HTTPServer.Address)
 
-			server := httpserver.NewServer(httpserver.Config{
-				Addr: config.HTTPServer.Address,
-			})
-
-			instance.AddHTTPServer(server)
+			instance.AddHTTPServer(config.HTTPServer.Address)
 		}
 
 		for _, listenOnUDP := range config.ListenUDP {

@@ -19,28 +19,26 @@ func (c *Cyn) Run() error {
 
 	for _, tcpListener := range c.tcpListeners {
 		listenOrSendCount++
-
-		// Shadow to correctly capture the variable
-		tcpListener := tcpListener
-		eg.Go(tcpListener.Listen)
+		listen := tcpListener.Listen
+		eg.Go(listen)
 	}
 
 	for _, udpListener := range c.udpListeners {
 		listenOrSendCount++
-
-		// Shadow to correctly capture the variable
-		udpListener := udpListener
-		eg.Go(udpListener.Listen)
+		listen := udpListener.Listen
+		eg.Go(listen)
 	}
 
 	for _, tcpSender := range c.tcpSenders {
 		listenOrSendCount++
-		eg.Go(tcpSender.Run)
+		run := tcpSender.Run
+		eg.Go(run)
 	}
 
 	for _, udpSender := range c.udpSenders {
 		listenOrSendCount++
-		eg.Go(udpSender.Run)
+		run := udpSender.Run
+		eg.Go(run)
 	}
 
 	c.mu.RUnlock()

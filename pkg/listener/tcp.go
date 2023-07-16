@@ -20,11 +20,11 @@ func NewTCP(addr net.TCPAddr) *TCPListener {
 	}
 }
 
-func (l *TCPListener) Addr() net.TCPAddr {
+func (l *TCPListener) Addr() string {
 	l.mu.RLock()
 	defer l.mu.RUnlock()
 
-	return l.addr
+	return l.addr.String()
 }
 
 func (l *TCPListener) Listen() error {

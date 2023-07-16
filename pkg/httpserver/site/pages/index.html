@@ -5,9 +5,11 @@
     <th>Bind Address</th>
   </thead>
   <tbody>
-{{ range $listener := .Data.ListenersTCP }}
-    <tr>{{ .Address }}</tr>
-{{ end }}
+    {{ range .Data.TCPListeners }}
+    <tr>
+      <td>{{ .Address }}</td>
+    </tr>
+    {{ end }}
   </tbody>
 </table>
 
@@ -17,9 +19,11 @@
     <th>Bind Address</th>
   </thead>
   <tbody>
-{{ range $listener := .Data.ListenersUDP }}
-    <tr>{{ .Address }}</tr>
-{{ end }}
+    {{ range .Data.UDPListeners }}
+    <tr>
+      <td>{{ .Address }}</td>
+    </tr>
+    {{ end }}
   </tbody>
 </table>
 {{ end }}

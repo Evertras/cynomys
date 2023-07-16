@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/evertras/cynomys/pkg/listener"
+
 	"github.com/evertras/gonsen"
 )
 
@@ -11,19 +12,20 @@ type Server struct {
 	server *http.Server
 }
 
-type Config struct {
-	Addr string
+type OverallStatusGetter interface {
+	TCPListeners() []*listener.TCPListener
+	UDPListeners() []*listener.UDPListener
 }
 
-type StatusGetter interface {
-	GetTCPListeners() []*listener.TCPListener
-	GetUDPListeners() []*listener.UDPListener
-}
-
-func NewServer(config Config) *Server {
+func NewServer(addr string, statusGetter OverallStatusGetter) *Server {
 	// Config sanity checks
-	if config.Addr == "" {
-		panic("HTTP server address not given in config")
+	if addr == "" {
+		// This might be from bad user config, so use friendlier message
+		panic("http server address not given")
+	}
+	if statusGetter == nil {
+		// This is from a bad code path
+		panic("statusGetter isn't set")
 	}
 
 	s := http.NewServeMux()
@@ -31,14 +33,14 @@ func NewServer(config Config) *Server {
 	source := gonsen.NewSource(siteFilesRaw)
 
 	pageIndex := gonsen.NewPage(source, "index.html", func(r *http.Request) (IndexData, int) {
-		return IndexData{}, http.StatusOK
+		return IndexData{overallStatusFromGetter(statusGetter)}, http.StatusOK
 	})
 
 	s.Handle("/", pageIndex)
 
 	return &Server{
 		server: &http.Server{
-			Addr:    config.Addr,
+			Addr:    addr,
 			Handler: s,
 		},
 	}

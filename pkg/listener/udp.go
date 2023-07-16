@@ -19,11 +19,11 @@ func NewUDP(addr net.UDPAddr) *UDPListener {
 	}
 }
 
-func (l *UDPListener) Addr() net.UDPAddr {
+func (l *UDPListener) Addr() string {
 	l.mu.RLock()
 	defer l.mu.RUnlock()
 
-	return l.addr
+	return l.addr.String()
 }
 
 func (l *UDPListener) Listen() error {

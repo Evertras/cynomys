@@ -8,6 +8,7 @@ build-all: bin/cyn bin/cyn-linux bin/cyn-mac bin/cyn-windows
 bin/cyn: \
 	./cmd/cyn/*.go \
 	./cmd/cyn/cmds/*.go \
+	./pkg/cyn/*.go \
 	./pkg/httpserver/*.go \
 	./pkg/httpserver/site/*.html \
 	./pkg/httpserver/site/pages/*.html \
