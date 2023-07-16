@@ -5,9 +5,11 @@ import (
 	"log"
 	"net"
 	"strings"
+	"sync"
 )
 
 type UDPListener struct {
+	mu   sync.RWMutex
 	addr net.UDPAddr
 }
 
@@ -17,8 +19,17 @@ func NewUDP(addr net.UDPAddr) *UDPListener {
 	}
 }
 
+func (l *UDPListener) Addr() net.UDPAddr {
+	l.mu.RLock()
+	defer l.mu.RUnlock()
+
+	return l.addr
+}
+
 func (l *UDPListener) Listen() error {
+	l.mu.RLock()
 	conn, err := net.ListenUDP("udp", &l.addr)
+	l.mu.RUnlock()
 	if err != nil {
 		return fmt.Errorf("net.ListenUDP: %w", err)
 	}

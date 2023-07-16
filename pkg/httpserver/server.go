@@ -3,6 +3,7 @@ package httpserver
 import (
 	"net/http"
 
+	"github.com/evertras/cynomys/pkg/listener"
 	"github.com/evertras/gonsen"
 )
 
@@ -12,6 +13,11 @@ type Server struct {
 
 type Config struct {
 	Addr string
+}
+
+type StatusGetter interface {
+	GetTCPListeners() []*listener.TCPListener
+	GetUDPListeners() []*listener.UDPListener
 }
 
 func NewServer(config Config) *Server {

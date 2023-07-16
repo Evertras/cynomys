@@ -6,9 +6,11 @@ import (
 	"log"
 	"net"
 	"strings"
+	"sync"
 )
 
 type TCPListener struct {
+	mu   sync.RWMutex
 	addr net.TCPAddr
 }
 
@@ -18,8 +20,17 @@ func NewTCP(addr net.TCPAddr) *TCPListener {
 	}
 }
 
+func (l *TCPListener) Addr() net.TCPAddr {
+	l.mu.RLock()
+	defer l.mu.RUnlock()
+
+	return l.addr
+}
+
 func (l *TCPListener) Listen() error {
+	l.mu.RLock()
 	listener, err := net.ListenTCP("tcp", &l.addr)
+	l.mu.RUnlock()
 	if err != nil {
 		return fmt.Errorf("net.ListenTCP: %w", err)
 	}
