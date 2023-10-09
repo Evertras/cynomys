@@ -69,7 +69,8 @@ func initConfig() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
-	viper.ReadInConfig()
+	// Ignore errors here because we don't necessarily need a config file
+	_ = viper.ReadInConfig()
 
 	err := viper.Unmarshal(&config)
 
