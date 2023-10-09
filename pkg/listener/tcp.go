@@ -7,6 +7,8 @@ import (
 	"net"
 	"strings"
 	"sync"
+
+	"github.com/evertras/cynomys/pkg/constants"
 )
 
 type TCPListener struct {
@@ -61,6 +63,14 @@ func (l *TCPListener) Listen() error {
 					break
 				} else if err != nil {
 					log.Printf("failed to read: %s", err.Error())
+					_ = conn.Close()
+					break
+				}
+
+				_, err = conn.Write([]byte(constants.PingReply))
+
+				if err != nil {
+					log.Printf("failed to reply to ping: %s", err.Error())
 					_ = conn.Close()
 					break
 				}

@@ -38,7 +38,7 @@ func InitializeScenario(sc *godog.ScenarioContext) {
 	sc.AfterScenario(func(sc *godog.Scenario, err error) {
 		if err != nil {
 			for i, cmd := range t.cmds {
-				fmt.Printf("Process #%d", i)
+				fmt.Printf("Process #%d\n", i)
 				fmt.Println("vvvv STDOUT DUMP vvvv")
 				fmt.Println(cmd.Stdout())
 				fmt.Println("^^^^ STDOUT DUMP ^^^^")

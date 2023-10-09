@@ -6,6 +6,8 @@ import (
 	"net"
 	"sync"
 	"time"
+
+	"github.com/evertras/cynomys/pkg/metrics"
 )
 
 type TCPSender struct {
@@ -14,12 +16,15 @@ type TCPSender struct {
 	broadcastAddr net.TCPAddr
 	conn          *net.TCPConn
 	sendInterval  time.Duration
+
+	sink metrics.Sink
 }
 
-func NewTCPSender(addr net.TCPAddr, sendInterval time.Duration) *TCPSender {
+func NewTCPSender(addr net.TCPAddr, sendInterval time.Duration, sink metrics.Sink) *TCPSender {
 	return &TCPSender{
 		broadcastAddr: addr,
 		sendInterval:  sendInterval,
+		sink:          sink,
 	}
 }
 
@@ -48,12 +53,20 @@ func (s *TCPSender) Send(data []byte) error {
 		s.conn = c
 	}
 
+	sent := time.Now()
+
 	_, err := s.conn.Write(data)
 
 	if err != nil {
 		_ = s.conn.Close()
 		s.conn = nil
 		return fmt.Errorf("s.conn.Write: %w", err)
+	}
+
+	latency := time.Since(sent)
+
+	if err := s.sink.SendLatencyMeasurement(s.conn.LocalAddr().String(), s.conn.RemoteAddr().String(), latency); err != nil {
+		log.Printf("Failed to send latency measurement: %v", err)
 	}
 
 	return nil
