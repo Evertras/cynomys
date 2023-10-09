@@ -1,3 +1,6 @@
+GO_FILES=$(shell find . -name '*.go' | grep -v /vendor/)
+HTML_FILES=$(shell find . -name '*.html')
+
 .PHONY: build
 build: bin/cyn
 
@@ -6,22 +9,16 @@ build-all: bin/cyn bin/cyn-linux bin/cyn-mac bin/cyn-windows
 
 # Build for local
 bin/cyn: \
-	./cmd/cyn/*.go \
-	./cmd/cyn/cmds/*.go \
-	./pkg/cyn/*.go \
-	./pkg/httpserver/*.go \
-	./pkg/httpserver/site/*.html \
-	./pkg/httpserver/site/pages/*.html \
-	./pkg/listener/*.go \
-	./pkg/sender/*.go
+	$(GO_FILES) \
+	$(HTML_FILES)
 	CGO_ENABLED=0 go build -o bin/cyn ./cmd/cyn/*.go
 
 # Build for other OSes
-bin/cyn-linux: ./cmd/cyn/*.go ./pkg/listener/*.go ./pkg/sender/*.go
+bin/cyn-linux: $(GO_FILES) $(HTML_FILES)
 	CGO_ENABLED=0 GOOS=linux go build -o bin/cyn-linux ./cmd/cyn/*.go
-bin/cyn-mac: ./cmd/cyn/*.go ./pkg/listener/*.go ./pkg/sender/*.go
+bin/cyn-mac: $(GO_FILES) $(HTML_FILES)
 	CGO_ENABLED=0 GOOS=darwin go build -o bin/cyn-mac ./cmd/cyn/*.go
-bin/cyn-windows: ./cmd/cyn/*.go ./pkg/listener/*.go ./pkg/sender/*.go
+bin/cyn-windows: $(GO_FILES) $(HTML_FILES)
 	CGO_ENABLED=0 GOOS=windows go build -o bin/cyn-windows ./cmd/cyn/*.go
 
 .PHONY: docker
