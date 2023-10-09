@@ -138,6 +138,9 @@ send-tcp:
 send-interval: 30s
 http:
   address: 127.0.0.1:8080
+sinks:
+  stdout:
+    enabled: true
 ```
 
 The configuration file must be supplied with the `--config/-c` command line
@@ -174,6 +177,7 @@ Flags:
   -i, --send-interval duration   How long to wait between attempting to send data (default 1s)
   -T, --send-tcp strings         An IP:port address to send to (TCP).  Can be specified multiple times.
   -U, --send-udp strings         An IP:port address to send to (UDP).  Can be specified multiple times.
+      --sinks.stdout.enabled     Whether to enable the stdout metrics sink
 
 Use " [command] --help" for more information about a command.
 ```
