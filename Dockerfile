@@ -1,5 +1,5 @@
 # Builder image
-FROM golang:1.19.3 AS builder
+FROM golang:1.21.2 AS builder
 ARG BUILD_VERSION=docker-dev
 
 WORKDIR /app
