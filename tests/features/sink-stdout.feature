@@ -13,3 +13,18 @@ Feature: watch latency in stdout
     And I run cyn -U 127.0.0.1:14567 --send-interval 200ms --sinks.stdout.enabled
     When I wait 1 second
     Then the stdout contains "latency"
+
+  Scenario: latency is displayed in stdout when configured via file
+    Given a configuration file that contains:
+      """
+      send-udp:
+        - 127.0.0.1:14567
+      send-interval: 10ms
+      sinks:
+        stdout:
+          enabled: true
+      """
+    And I run cyn -u 127.0.0.1:14567
+    When cyn is started with the config file 
+    When I wait 1 second
+    Then the stdout contains "latency"
