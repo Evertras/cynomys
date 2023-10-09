@@ -12,6 +12,7 @@ import (
 
 	"github.com/evertras/cynomys/pkg/cyn"
 	"github.com/evertras/cynomys/pkg/listener"
+	"github.com/evertras/cynomys/pkg/metrics"
 	"github.com/evertras/cynomys/pkg/sender"
 )
 
@@ -24,6 +25,12 @@ var config struct {
 	HTTPServer   struct {
 		Address string `mapstructure:"address"`
 	} `mapstructure:"http"`
+
+	Sinks struct {
+		SinkStdout struct {
+			Enabled bool `mapstructure:"enabled"`
+		} `mapstructure:"stdout"`
+	} `mapstructure:"sinks"`
 }
 
 var (
@@ -44,6 +51,7 @@ func init() {
 	flags.StringSliceP("send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
 	flags.DurationP("send-interval", "i", time.Second, "How long to wait between attempting to send data")
 	flags.String("http.address", "", "An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'")
+	flags.Bool("sinks.stdout.enabled", false, "Whether to enable the stdout metrics sink")
 
 	err := viper.BindPFlags(flags)
 
@@ -72,6 +80,14 @@ func initConfig() {
 
 var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
+		sinks := []metrics.Sink{}
+
+		if config.Sinks.SinkStdout.Enabled {
+			sinks = append(sinks, metrics.NewSinkStdout())
+		}
+
+		sink := metrics.NewMultiSink(sinks...)
+
 		instance := cyn.New()
 
 		if config.HTTPServer.Address != "" {
@@ -107,7 +123,7 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveUDPAddr for %q: %w", sendUDPTo, err)
 			}
 
-			instance.AddUDPSender(sender.NewUDPSender(*addr, config.SendInterval))
+			instance.AddUDPSender(sender.NewUDPSender(*addr, config.SendInterval, sink))
 		}
 
 		// We could probably generalize this a bit better, but it's short enough
@@ -119,7 +135,7 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveTCPAddr for %q: %w", sendTCPTo, err)
 			}
 
-			instance.AddTCPSender(sender.NewTCPSender(*addr, config.SendInterval))
+			instance.AddTCPSender(sender.NewTCPSender(*addr, config.SendInterval, sink))
 		}
 
 		return instance.Run()

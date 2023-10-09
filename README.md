@@ -36,6 +36,13 @@ binary for native level testing.
 Optional HTTP server that provides a simple landing page to show current
 status and configuration of the given `cyn` instance.
 
+Measure latency from senders to receivers over time. Note that a small delay
+exists (100-200μs) with UDP measurements due to how connections may not be
+efficiently routed. TCP-based pings will be lower and more accurate for network
+latency at lower values. This cannot be easily fixed since we support broadcast
+with UDP, making two way communication more complicated, but may be addressed
+in the future.
+
 ### Future
 
 These will be converted to issues in the future, but some other ideas...

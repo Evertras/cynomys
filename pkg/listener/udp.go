@@ -6,6 +6,8 @@ import (
 	"net"
 	"strings"
 	"sync"
+
+	"github.com/evertras/cynomys/pkg/constants"
 )
 
 type UDPListener struct {
@@ -42,6 +44,14 @@ func (l *UDPListener) Listen() error {
 
 		if err != nil {
 			return fmt.Errorf("conn.ReadFromUDP: %w", err)
+		}
+
+		// Write back before doing anything else to minimize latency,
+		// every nanosecond counts!
+		_, err = conn.WriteToUDP([]byte(constants.PingReply), remote)
+
+		if err != nil {
+			return fmt.Errorf("conn.WriteToUDP: %w", err)
 		}
 
 		log.Printf("Read %d bytes from %v", rlen, remote)
