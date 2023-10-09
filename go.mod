@@ -1,6 +1,6 @@
 module github.com/evertras/cynomys
 
-go 1.19
+go 1.21
 
 require (
 	github.com/cucumber/godog v0.12.5
