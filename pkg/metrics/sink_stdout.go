@@ -13,9 +13,9 @@ func NewSinkStdout() *SinkStdout {
 	return &SinkStdout{}
 }
 
-// SendLatencyMeasurement sends a latency measurement to stdout.
-func (s *SinkStdout) SendLatencyMeasurement(fromAddr, toAddr string, measurement time.Duration) error {
-	log.Printf("%v -> %v latency: %v", fromAddr, toAddr, measurement)
+// SendRTTLatencyMeasurement sends a latency measurement to stdout.
+func (s *SinkStdout) SendRTTLatencyMeasurement(fromAddr, toAddr string, measurement time.Duration) error {
+	log.Printf("%v -> %v RTT latency: %v", fromAddr, toAddr, measurement)
 
 	return nil
 }

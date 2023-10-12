@@ -64,7 +64,7 @@ func (s *UDPSender) Send(data []byte) error {
 
 	latency := time.Since(sent)
 
-	err = s.sink.SendLatencyMeasurement(s.conn.LocalAddr().String(), s.conn.RemoteAddr().String(), latency)
+	err = s.sink.SendRTTLatencyMeasurement(s.conn.LocalAddr().String(), s.conn.RemoteAddr().String(), latency)
 
 	if err != nil {
 		log.Printf("Failed to send latency measurement: %v", err)

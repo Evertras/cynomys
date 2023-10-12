@@ -77,7 +77,7 @@ func (s *TCPSender) Send(data []byte) error {
 
 	latency := time.Since(sent)
 
-	if err := s.sink.SendLatencyMeasurement(s.conn.LocalAddr().String(), s.conn.RemoteAddr().String(), latency); err != nil {
+	if err := s.sink.SendRTTLatencyMeasurement(s.conn.LocalAddr().String(), s.conn.RemoteAddr().String(), latency); err != nil {
 		log.Printf("Failed to send latency measurement: %v", err)
 	}
 
