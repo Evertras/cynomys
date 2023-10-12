@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/evertras/cynomys/pkg/constants"
 	"github.com/evertras/cynomys/pkg/metrics"
 )
 
@@ -61,6 +62,17 @@ func (s *TCPSender) Send(data []byte) error {
 		_ = s.conn.Close()
 		s.conn = nil
 		return fmt.Errorf("s.conn.Write: %w", err)
+	}
+
+	reply := make([]byte, 16)
+	_, err = s.conn.Read(reply)
+
+	if err != nil {
+		return fmt.Errorf("waiting for ping reply s.conn.Read: %w", err)
+	}
+
+	if reply[0] != constants.PingReply[0] {
+		return fmt.Errorf("ping reply was not %q: %q", constants.PingReply, string(reply))
 	}
 
 	latency := time.Since(sent)
