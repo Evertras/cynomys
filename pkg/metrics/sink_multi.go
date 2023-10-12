@@ -20,13 +20,13 @@ func NewMultiSink(sinks ...Sink) *MultiSink {
 	}
 }
 
-// SendLatencyMeasurement sends a latency measurement to all sinks.
+// SendRTTLatencyMeasurement sends a latency measurement to all sinks.
 // Any errors are returned as a single joined error.
-func (s *MultiSink) SendLatencyMeasurement(fromAddr, toAddr string, measurement time.Duration) error {
+func (s *MultiSink) SendRTTLatencyMeasurement(fromAddr, toAddr string, measurement time.Duration) error {
 	errs := make([]error, 0, len(s.sinks))
 
 	for _, sink := range s.sinks {
-		if err := sink.SendLatencyMeasurement(fromAddr, toAddr, measurement); err != nil {
+		if err := sink.SendRTTLatencyMeasurement(fromAddr, toAddr, measurement); err != nil {
 			errs = append(errs, err)
 		}
 	}
