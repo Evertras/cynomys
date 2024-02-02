@@ -8,6 +8,7 @@
 *.so
 *.dylib
 /bin
+/result
 
 # Test binary, built with `go test -c`
 *.test
@@ -20,6 +21,9 @@ tests/cyn-bdd-config.yaml
 
 # Vagrant
 /.vagrant
+
+# Direnv nix things
+/.direnv
 
 # Prettier installs locally here
 node_modules
