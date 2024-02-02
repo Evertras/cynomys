@@ -11,4 +11,5 @@ buildGoApplication {
   src = ./.;
   subPackages = [ "cmd/cyn" ];
   modules = ./gomod2nix.toml;
+  meta.mainProgram = "cyn";
 }
