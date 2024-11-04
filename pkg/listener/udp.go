@@ -37,7 +37,7 @@ func (l *UDPListener) Listen() error {
 	}
 	defer conn.Close()
 
-	buf := make([]byte, 1024)
+	buf := make([]byte, maxPacketBytesReceived)
 
 	for {
 		rlen, remote, err := conn.ReadFromUDP(buf)

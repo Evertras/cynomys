@@ -48,7 +48,7 @@ func (l *TCPListener) Listen() error {
 		log.Printf("TCP connected from %s", conn.RemoteAddr().String())
 
 		go func() {
-			buf := make([]byte, 1024)
+			buf := make([]byte, maxPacketBytesReceived)
 			remote := conn.RemoteAddr().String()
 
 			for {
