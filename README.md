@@ -129,6 +129,7 @@ send-udp:
 send-tcp:
   - 192.168.58.3:1235
 send-interval: 30s
+send-data: "my-custom-data"
 http:
   address: 127.0.0.1:8080
 sinks:
@@ -152,7 +153,7 @@ All available flags can be seen by running `cyn --help`. This README snippet sho
 have the latest, but when in doubt, just run the command to check.
 
 ```bash
-✔ cyn --help
+$ cyn --help
 Usage:
    [flags]
    [command]
@@ -167,6 +168,7 @@ Flags:
       --http.address string      An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'
   -t, --listen-tcp strings       An IP:port address to listen on for TCP.  Can be specified multiple times.
   -u, --listen-udp strings       An IP:port address to listen on for UDP.  Can be specified multiple times.
+  -d, --send-data string         The string data to send. (default "hi")
   -i, --send-interval duration   How long to wait between attempting to send data (default 1s)
   -T, --send-tcp strings         An IP:port address to send to (TCP).  Can be specified multiple times.
   -U, --send-udp strings         An IP:port address to send to (UDP).  Can be specified multiple times.
