@@ -10,9 +10,9 @@ Feature: send and receive UDP
 
   Scenario: one listen one send (shorthand flags)
     Given I run cyn -u 127.0.0.1:14563
-    And I run cyn -U 127.0.0.1:14563 -i 10ms
+    And I run cyn -U 127.0.0.1:14563 -i 10ms -d "bdd-test-data"
     When I wait a moment
-    Then the stdout contains "hi"
+    Then the stdout contains "bdd-test-data"
 
   Scenario: an instance is set to call itself via config file
     Given a configuration file that contains:

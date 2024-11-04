@@ -45,8 +45,6 @@ These will be converted to issues in the future, but some other ideas...
 Test that connectivity is NOT made between different machines that should not
 talk to each other, for firewall/security reasons.
 
-Customizable data to send.
-
 Allow metric collection (Prometheus, etc).
 
 Realtime streaming updates for the HTML view.

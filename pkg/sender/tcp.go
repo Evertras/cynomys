@@ -18,14 +18,17 @@ type TCPSender struct {
 	conn          *net.TCPConn
 	sendInterval  time.Duration
 
+	sendData []byte
+
 	sink metrics.Sink
 }
 
-func NewTCPSender(addr net.TCPAddr, sendInterval time.Duration, sink metrics.Sink) *TCPSender {
+func NewTCPSender(addr net.TCPAddr, sendInterval time.Duration, sink metrics.Sink, sendData []byte) *TCPSender {
 	return &TCPSender{
 		broadcastAddr: addr,
 		sendInterval:  sendInterval,
 		sink:          sink,
+		sendData:      sendData,
 	}
 }
 
@@ -91,7 +94,7 @@ func (s *TCPSender) Run() error {
 	s.mu.RUnlock()
 
 	for {
-		err := s.Send([]byte("hi"))
+		err := s.Send(s.sendData)
 
 		if err != nil {
 			log.Printf("Failed to send to %q: %v", sendTCPTo, err)

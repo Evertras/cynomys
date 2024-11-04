@@ -21,14 +21,17 @@ type UDPSender struct {
 	fromAddr string
 	toAddr   string
 
+	sendData []byte
+
 	sink metrics.Sink
 }
 
-func NewUDPSender(addr net.UDPAddr, sendInterval time.Duration, sink metrics.Sink) *UDPSender {
+func NewUDPSender(addr net.UDPAddr, sendInterval time.Duration, sink metrics.Sink, sendData []byte) *UDPSender {
 	return &UDPSender{
 		broadcastAddr: addr,
 		sendInterval:  sendInterval,
 		sink:          sink,
+		sendData:      sendData,
 	}
 }
 
@@ -80,7 +83,7 @@ func (s *UDPSender) Run() error {
 	s.mu.RUnlock()
 
 	for {
-		err := s.Send([]byte("hi"))
+		err := s.Send(s.sendData)
 		if err != nil {
 			log.Printf("Failed to send to %q: %v", sendUDPTo, err)
 		}

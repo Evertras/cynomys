@@ -22,6 +22,7 @@ var config struct {
 	SendUDP      []string      `mapstructure:"send-udp"`
 	SendTCP      []string      `mapstructure:"send-tcp"`
 	SendInterval time.Duration `mapstructure:"send-interval"`
+	SendData     string        `mapstructure:"send-data"`
 	HTTPServer   struct {
 		Address string `mapstructure:"address"`
 	} `mapstructure:"http"`
@@ -49,6 +50,7 @@ func init() {
 	flags.StringSliceP("listen-tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
 	flags.StringSliceP("send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
 	flags.StringSliceP("send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
+	flags.StringP("send-data", "d", "hi", "The string data to send.")
 	flags.DurationP("send-interval", "i", time.Second, "How long to wait between attempting to send data")
 	flags.String("http.address", "", "An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'")
 	flags.Bool("sinks.stdout.enabled", false, "Whether to enable the stdout metrics sink")
@@ -124,7 +126,7 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveUDPAddr for %q: %w", sendUDPTo, err)
 			}
 
-			instance.AddUDPSender(sender.NewUDPSender(*addr, config.SendInterval, sink))
+			instance.AddUDPSender(sender.NewUDPSender(*addr, config.SendInterval, sink, []byte(config.SendData)))
 		}
 
 		// We could probably generalize this a bit better, but it's short enough
@@ -136,7 +138,7 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveTCPAddr for %q: %w", sendTCPTo, err)
 			}
 
-			instance.AddTCPSender(sender.NewTCPSender(*addr, config.SendInterval, sink))
+			instance.AddTCPSender(sender.NewTCPSender(*addr, config.SendInterval, sink, []byte(config.SendData)))
 		}
 
 		return instance.Run()
