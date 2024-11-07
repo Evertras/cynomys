@@ -3,13 +3,13 @@ Feature: send and receive UDP
   Cyn should both send and receive UDP packets
 
   Scenario: one listen one send to nothing
-    Given I run cyn --listen-udp 127.0.0.1:14563
+    Given I run cyn --listen-udp 127.0.0.1:14563 --listen.echo
     And I run cyn --send.udp 127.0.0.1:14568 --send.interval 10ms
     When I wait a moment
     Then the stdout contains "connection refused"
 
   Scenario: one listen one send (shorthand flags)
-    Given I run cyn -u 127.0.0.1:14563
+    Given I run cyn -u 127.0.0.1:14563 -e
     And I run cyn -U 127.0.0.1:14563 -i 10ms -d "bdd-test-data"
     When I wait a moment
     Then the stdout contains "bdd-test-data"
@@ -26,6 +26,7 @@ Feature: send and receive UDP
       listen:
         udp:
           - 127.0.0.1:14568
+        echo: true
       send:
         udp:
           - 127.0.0.1:14568

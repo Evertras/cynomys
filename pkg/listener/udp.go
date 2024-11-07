@@ -10,25 +10,31 @@ import (
 	"github.com/evertras/cynomys/pkg/constants"
 )
 
-type UDPListener struct {
+type UdpListener struct {
 	mu   sync.RWMutex
 	addr net.UDPAddr
+	cfg  UdpConfig
 }
 
-func NewUDP(addr net.UDPAddr) *UDPListener {
-	return &UDPListener{
+type UdpConfig struct {
+	Echo bool
+}
+
+func NewUDP(addr net.UDPAddr, cfg UdpConfig) *UdpListener {
+	return &UdpListener{
 		addr: addr,
+		cfg:  cfg,
 	}
 }
 
-func (l *UDPListener) Addr() string {
+func (l *UdpListener) Addr() string {
 	l.mu.RLock()
 	defer l.mu.RUnlock()
 
 	return l.addr.String()
 }
 
-func (l *UDPListener) Listen() error {
+func (l *UdpListener) Listen() error {
 	l.mu.RLock()
 	conn, err := net.ListenUDP("udp", &l.addr)
 	l.mu.RUnlock()
@@ -55,6 +61,9 @@ func (l *UDPListener) Listen() error {
 		}
 
 		log.Printf("Read %d bytes from %v", rlen, remote)
-		log.Printf("Received: %s", strings.ReplaceAll(string(buf), "\n", "\\n"))
+
+		if l.cfg.Echo {
+			log.Printf("Received: %s", strings.ReplaceAll(string(buf), "\n", "\\n"))
+		}
 	}
 }

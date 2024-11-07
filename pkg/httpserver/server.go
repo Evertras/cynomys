@@ -13,8 +13,8 @@ type Server struct {
 }
 
 type OverallStatusGetter interface {
-	TCPListeners() []*listener.TCPListener
-	UDPListeners() []*listener.UDPListener
+	TCPListeners() []*listener.TcpListener
+	UDPListeners() []*listener.UdpListener
 }
 
 func NewServer(addr string, statusGetter OverallStatusGetter) *Server {

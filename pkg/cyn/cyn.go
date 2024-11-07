@@ -11,8 +11,8 @@ import (
 type Cyn struct {
 	mu sync.RWMutex
 
-	tcpListeners []*listener.TCPListener
-	udpListeners []*listener.UDPListener
+	tcpListeners []*listener.TcpListener
+	udpListeners []*listener.UdpListener
 	tcpSenders   []*sender.TCPSender
 	udpSenders   []*sender.UDPSender
 
@@ -23,33 +23,33 @@ func New() *Cyn {
 	return &Cyn{}
 }
 
-func (c *Cyn) AddTCPListener(tcpListener *listener.TCPListener) {
+func (c *Cyn) AddTCPListener(tcpListener *listener.TcpListener) {
 	c.mu.Lock()
 	c.tcpListeners = append(c.tcpListeners, tcpListener)
 	c.mu.Unlock()
 }
 
-func (c *Cyn) TCPListeners() []*listener.TCPListener {
+func (c *Cyn) TCPListeners() []*listener.TcpListener {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	listeners := make([]*listener.TCPListener, len(c.tcpListeners))
+	listeners := make([]*listener.TcpListener, len(c.tcpListeners))
 	copy(listeners, c.tcpListeners)
 
 	return listeners
 }
 
-func (c *Cyn) AddUDPListener(udpListener *listener.UDPListener) {
+func (c *Cyn) AddUDPListener(udpListener *listener.UdpListener) {
 	c.mu.Lock()
 	c.udpListeners = append(c.udpListeners, udpListener)
 	c.mu.Unlock()
 }
 
-func (c *Cyn) UDPListeners() []*listener.UDPListener {
+func (c *Cyn) UDPListeners() []*listener.UdpListener {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	listeners := make([]*listener.UDPListener, len(c.udpListeners))
+	listeners := make([]*listener.UdpListener, len(c.udpListeners))
 	copy(listeners, c.udpListeners)
 
 	return listeners
