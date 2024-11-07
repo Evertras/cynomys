@@ -3,18 +3,18 @@ Feature: listen for TCP
   Cyn should accept incoming TCP connections
 
   Scenario: nothing is sent
-    Given I run cyn --listen-tcp 127.0.0.1:24563
+    Given I run cyn --listen.tcp 127.0.0.1:24563
     When I wait 1 second
     Then there is no output
 
   Scenario: a TCP connection is made with no data sent
-    Given I run cyn --listen-tcp 127.0.0.1:24564
+    Given I run cyn --listen.tcp 127.0.0.1:24564
     When I connect with TCP to 127.0.0.1:24564
     And I wait a moment
     Then the stdout contains "TCP connected"
 
   Scenario: a TCP connection is made and then disconnected
-    Given I run cyn --listen-tcp 127.0.0.1:24565
+    Given I run cyn --listen.tcp 127.0.0.1:24565
     When I connect with TCP to 127.0.0.1:24565
     And I wait a moment
     And I disconnect my TCP connection
@@ -30,11 +30,12 @@ Feature: listen for TCP
     Then the stdout contains "TCP connected"
     And the stdout contains "my tcp stuff"
 
-  Scenario: the listener is set via config file
+  Scenario: the tcp listener is set via config file
     Given a configuration file that contains:
       """
-      listen-tcp:
-        - 127.0.0.1:14568
+      listen:
+        tcp:
+          - 127.0.0.1:14568
       """
     And cyn is started with the config file
     When I connect with TCP to 127.0.0.1:14568
