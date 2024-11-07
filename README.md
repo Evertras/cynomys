@@ -90,8 +90,8 @@ cyn -u 192.168.58.4:3456 \
 ```
 
 ```bash
-# Listen for broadcast messages on Machine A
-cyn -u :1234
+# Listen for broadcast messages on Machine A and echo the data received
+cyn -u :1234 -e
 
 # Broadcast messages from Machine B using the regular UDP sender
 cyn -U 192.168.58.255:1234
