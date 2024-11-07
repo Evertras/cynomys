@@ -11,25 +11,31 @@ import (
 	"github.com/evertras/cynomys/pkg/constants"
 )
 
-type TCPListener struct {
+type TcpListener struct {
 	mu   sync.RWMutex
 	addr net.TCPAddr
+	cfg  TcpConfig
 }
 
-func NewTCP(addr net.TCPAddr) *TCPListener {
-	return &TCPListener{
+type TcpConfig struct {
+	Echo bool
+}
+
+func NewTCP(addr net.TCPAddr, cfg TcpConfig) *TcpListener {
+	return &TcpListener{
 		addr: addr,
+		cfg:  cfg,
 	}
 }
 
-func (l *TCPListener) Addr() string {
+func (l *TcpListener) Addr() string {
 	l.mu.RLock()
 	defer l.mu.RUnlock()
 
 	return l.addr.String()
 }
 
-func (l *TCPListener) Listen() error {
+func (l *TcpListener) Listen() error {
 	l.mu.RLock()
 	listener, err := net.ListenTCP("tcp", &l.addr)
 	l.mu.RUnlock()
@@ -76,7 +82,10 @@ func (l *TCPListener) Listen() error {
 				}
 
 				log.Printf("Read %d bytes from %v", rlen, remote)
-				log.Printf("Received: %s", strings.ReplaceAll(string(buf), "\n", "\\n"))
+
+				if l.cfg.Echo {
+					log.Printf("Received: %s", strings.ReplaceAll(string(buf), "\n", "\\n"))
+				}
 			}
 
 			log.Printf("TCP disconnected from %s", remote)

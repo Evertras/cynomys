@@ -18,8 +18,9 @@ import (
 
 var config struct {
 	Listen struct {
-		Udp []string `mapstructure:"udp"`
-		Tcp []string `mapstructure:"tcp"`
+		Udp  []string `mapstructure:"udp"`
+		Tcp  []string `mapstructure:"tcp"`
+		Echo bool     `mapstructure:"echo"`
 	} `mapstructure:"listen"`
 
 	Send struct {
@@ -55,6 +56,7 @@ func init() {
 
 	flags.StringSliceP("listen.udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
 	flags.StringSliceP("listen.tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
+	flags.BoolP("listen.echo", "e", false, "If enabled, echo the data that's received. Otherwise just print the length received (default).")
 	flags.StringSliceP("send.udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
 	flags.StringSliceP("send.tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
 	flags.StringP("send.data", "d", "hi", "The string data to send.")
@@ -113,7 +115,9 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveUDPAddr for %q: %w", listenOnUDP, err)
 			}
 
-			instance.AddUDPListener(listener.NewUDP(*addr))
+			instance.AddUDPListener(listener.NewUDP(*addr, listener.UdpConfig{
+				Echo: config.Listen.Echo,
+			}))
 		}
 
 		for _, listenOnTCP := range config.Listen.Tcp {
@@ -123,7 +127,9 @@ var rootCmd = &cobra.Command{
 				return fmt.Errorf("net.ResolveTCPAddr for %q: %w", listenOnTCP, err)
 			}
 
-			instance.AddTCPListener(listener.NewTCP(*addr))
+			instance.AddTCPListener(listener.NewTCP(*addr, listener.TcpConfig{
+				Echo: config.Listen.Echo,
+			}))
 		}
 
 		for _, sendUDPTo := range config.Send.Udp {

@@ -23,7 +23,7 @@ Feature: listen for TCP
     And the stdout contains "TCP disconnected"
 
   Scenario: a TCP connection is made and data is sent (shorthand flag)
-    Given I run cyn -t 127.0.0.1:24565
+    Given I run cyn -t 127.0.0.1:24565 -e
     When I connect with TCP to 127.0.0.1:24565
     And I send "my tcp stuff" over my TCP connection
     And I wait a moment
@@ -34,6 +34,7 @@ Feature: listen for TCP
     Given a configuration file that contains:
       """
       listen:
+        echo: true
         tcp:
           - 127.0.0.1:14568
       """

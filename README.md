@@ -116,7 +116,7 @@ and/or environment variables.
 All available flags can be seen by running `cyn --help`. This README snippet should
 have the latest, but when in doubt, just run the command to check.
 
-```bash
+```text
 $ cyn --help
 Usage:
    [flags]
@@ -130,6 +130,7 @@ Flags:
   -c, --config string            A file path to load as additional configuration.
   -h, --help                     help for this command
       --http.address string      An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'
+  -e, --listen.echo              If enabled, echo the data that's received. Otherwise just print the length received (default).
   -t, --listen.tcp strings       An IP:port address to listen on for TCP.  Can be specified multiple times.
   -u, --listen.udp strings       An IP:port address to listen on for UDP.  Can be specified multiple times.
   -d, --send.data string         The string data to send. (default "hi")
@@ -161,6 +162,7 @@ A full configuration file with all options is given below.
 ```yaml
 # my-cyn-config.yaml
 listen:
+  echo: true
   udp:
     - 192.168.58.4:2345
   tcp:

@@ -8,7 +8,7 @@ Feature: send and receive TCP
     Then the stdout contains "connection refused"
 
   Scenario: one listen one send (shorthand flags)
-    Given I run cyn -t 127.0.0.1:15235
+    Given I run cyn -t 127.0.0.1:15235 -e
     And I run cyn -T 127.0.0.1:15235 -i 10ms
     When I wait a moment
     Then the stdout contains "connected"
@@ -38,6 +38,7 @@ Feature: send and receive TCP
     Given a configuration file that contains:
       """
       listen:
+        echo: true
         tcp:
           - 127.0.0.1:24568
       send:
@@ -53,6 +54,7 @@ Feature: send and receive TCP
     Given a configuration file that contains:
       """
       listen:
+        echo: true
         tcp:
           - 127.0.0.1:24568
       send:
