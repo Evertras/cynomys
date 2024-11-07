@@ -21,6 +21,10 @@ var config struct {
 		Udp  []string `mapstructure:"udp"`
 		Tcp  []string `mapstructure:"tcp"`
 		Echo bool     `mapstructure:"echo"`
+
+		Burst struct {
+			Window time.Duration `mapstructure:"window"`
+		} `mapstructure:"burst"`
 	} `mapstructure:"listen"`
 
 	Send struct {
@@ -57,6 +61,7 @@ func init() {
 	flags.StringSliceP("listen.udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
 	flags.StringSliceP("listen.tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
 	flags.BoolP("listen.echo", "e", false, "If enabled, echo the data that's received. Otherwise just print the length received (default).")
+	flags.Duration("listen.burst.window", 0, "If supplied, aggregate received data and output the total length received over the given window. The time starts as soon as any data is received. Currently only applied for UDP listeners.")
 	flags.StringSliceP("send.udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
 	flags.StringSliceP("send.tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
 	flags.StringP("send.data", "d", "hi", "The string data to send.")
@@ -117,6 +122,9 @@ var rootCmd = &cobra.Command{
 
 			instance.AddUDPListener(listener.NewUDP(*addr, listener.UdpConfig{
 				Echo: config.Listen.Echo,
+				Burst: listener.BurstConfig{
+					Window: config.Listen.Burst.Window,
+				},
 			}))
 		}
 

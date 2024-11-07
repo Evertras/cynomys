@@ -25,6 +25,14 @@ Feature: listen for UDP
     Then the stdout contains "hello"
     And the stdout contains "another"
 
+  Scenario: multiple UDP packets are sent with burst window on the listener
+    Given I run cyn -u 127.0.0.1:14564 --listen.echo --listen.burst.window 100ms
+    When I send a UDP packet containing "hello" to 127.0.0.1:14564
+    And I send a UDP packet containing "another" to 127.0.0.1:14564
+    And I wait a moment
+    Then the stdout contains "Received: helloanother"
+    And the stdout contains "Read 12 bytes"
+
   Scenario: the udp listener is set via config file
     Given a configuration file that contains:
       """
