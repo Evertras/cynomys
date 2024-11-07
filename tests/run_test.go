@@ -21,7 +21,7 @@ func (t *testContext) xcynIsRunWithTheVersionCommand() error {
 }
 
 func (t *testContext) cynIsRunWithTheConfigFile() error {
-	return t.startCynInBackground("--config-file", configFileLocation)
+	return t.startCynInBackground("--config", configFileLocation)
 }
 
 func (t *testContext) iRunCyn(everything string) error {

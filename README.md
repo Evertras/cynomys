@@ -111,43 +111,7 @@ Instances that are listening will produce output when they receive messages.
 Configuration is available through command line flags, a configuration file,
 and/or environment variables.
 
-#### Configuration File
-
-A configuration file can be provided. This is useful when trying to template
-configuration such as with Consul or similar tools.
-
-A full configuration file with all options is given below.
-
-```yaml
-# my-cyn-config.yaml
-listen-udp:
-  - 192.168.58.4:2345
-listen-tcp:
-  - 192.168.58.4:2346
-send-udp:
-  - 192.168.58.3:1234
-send-tcp:
-  - 192.168.58.3:1235
-send-interval: 30s
-send-data: "my-custom-data"
-http:
-  address: 127.0.0.1:8080
-sinks:
-  stdout:
-    enabled: true
-```
-
-The configuration file must be supplied with the `--config/-c` command line
-flag.
-
-```bash
-cyn --config ./my-cyn-config.yaml
-
-# Can also use -c for shorthand
-cyn -c ./my-cyn-config.yaml
-```
-
-### Command line flags
+#### Command line flags
 
 All available flags can be seen by running `cyn --help`. This README snippet should
 have the latest, but when in doubt, just run the command to check.
@@ -163,28 +127,66 @@ Available Commands:
   version     Displays the version
 
 Flags:
-  -c, --config-file string       A file path to load as additional configuration.
+  -c, --config string            A file path to load as additional configuration.
   -h, --help                     help for this command
       --http.address string      An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'
-  -t, --listen-tcp strings       An IP:port address to listen on for TCP.  Can be specified multiple times.
-  -u, --listen-udp strings       An IP:port address to listen on for UDP.  Can be specified multiple times.
-  -d, --send-data string         The string data to send. (default "hi")
-  -i, --send-interval duration   How long to wait between attempting to send data (default 1s)
-  -T, --send-tcp strings         An IP:port address to send to (TCP).  Can be specified multiple times.
-  -U, --send-udp strings         An IP:port address to send to (UDP).  Can be specified multiple times.
+  -t, --listen.tcp strings       An IP:port address to listen on for TCP.  Can be specified multiple times.
+  -u, --listen.udp strings       An IP:port address to listen on for UDP.  Can be specified multiple times.
+  -d, --send.data string         The string data to send. (default "hi")
+  -i, --send.interval duration   How long to wait between attempting to send data (default 1s)
+  -T, --send.tcp strings         An IP:port address to send to (TCP).  Can be specified multiple times.
+  -U, --send.udp strings         An IP:port address to send to (UDP).  Can be specified multiple times.
       --sinks.stdout.enabled     Whether to enable the stdout metrics sink
 
 Use " [command] --help" for more information about a command.
 ```
 
-### Environment variables
+#### Environment variables
 
 Configuration can be supplied throuh environment variables that follow the
-`CYNOMYS_VAR_NAME` pattern, replacing `-` with `_`. For example:
+`CYNOMYS_VAR_NAME` pattern, replacing `.` with `_`. For example:
 
 ```bash
 export CYNOMYS_SEND_INTERVAL=500ms
 cyn -T 192.168.58.3:1234
+```
+
+#### Configuration File
+
+A configuration file can be provided. This is useful when trying to template
+configuration such as with Consul or similar tools.
+
+A full configuration file with all options is given below.
+
+```yaml
+# my-cyn-config.yaml
+listen:
+  udp:
+    - 192.168.58.4:2345
+  tcp:
+    - 192.168.58.4:2346
+send:
+  udp:
+    - 192.168.58.3:1234
+  tcp:
+    - 192.168.58.3:1235
+  interval: 30s
+  data: "my custom data"
+http:
+  address: 127.0.0.1:8080
+sinks:
+  stdout:
+    enabled: true
+```
+
+The configuration file must be supplied with the `--config/-c` command line
+flag.
+
+```bash
+cyn --config ./my-cyn-config.yaml
+
+# Can also use -c for shorthand
+cyn -c ./my-cyn-config.yaml
 ```
 
 ## Why the name

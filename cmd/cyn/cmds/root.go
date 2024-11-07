@@ -17,13 +17,20 @@ import (
 )
 
 var config struct {
-	ListenUDP    []string      `mapstructure:"listen-udp"`
-	ListenTCP    []string      `mapstructure:"listen-tcp"`
-	SendUDP      []string      `mapstructure:"send-udp"`
-	SendTCP      []string      `mapstructure:"send-tcp"`
-	SendInterval time.Duration `mapstructure:"send-interval"`
-	SendData     string        `mapstructure:"send-data"`
-	HTTPServer   struct {
+	Listen struct {
+		Udp []string `mapstructure:"udp"`
+		Tcp []string `mapstructure:"tcp"`
+	} `mapstructure:"listen"`
+
+	Send struct {
+		Udp []string `mapstructure:"udp"`
+		Tcp []string `mapstructure:"tcp"`
+
+		Interval time.Duration `mapstructure:"interval"`
+		Data     string        `mapstructure:"data"`
+	} `mapstructure:"send"`
+
+	HTTPServer struct {
 		Address string `mapstructure:"address"`
 	} `mapstructure:"http"`
 
@@ -44,14 +51,14 @@ func init() {
 	flags := rootCmd.Flags()
 
 	// Special flag for config
-	flags.StringVarP(&configFilePath, "config-file", "c", "", "A file path to load as additional configuration.")
+	flags.StringVarP(&configFilePath, "config", "c", "", "A file path to load as additional configuration.")
 
-	flags.StringSliceP("listen-udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
-	flags.StringSliceP("listen-tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
-	flags.StringSliceP("send-udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
-	flags.StringSliceP("send-tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
-	flags.StringP("send-data", "d", "hi", "The string data to send.")
-	flags.DurationP("send-interval", "i", time.Second, "How long to wait between attempting to send data")
+	flags.StringSliceP("listen.udp", "u", nil, "An IP:port address to listen on for UDP.  Can be specified multiple times.")
+	flags.StringSliceP("listen.tcp", "t", nil, "An IP:port address to listen on for TCP.  Can be specified multiple times.")
+	flags.StringSliceP("send.udp", "U", nil, "An IP:port address to send to (UDP).  Can be specified multiple times.")
+	flags.StringSliceP("send.tcp", "T", nil, "An IP:port address to send to (TCP).  Can be specified multiple times.")
+	flags.StringP("send.data", "d", "hi", "The string data to send.")
+	flags.DurationP("send.interval", "i", time.Second, "How long to wait between attempting to send data")
 	flags.String("http.address", "", "An address:port to host an HTTP server on for realtime data, such as '127.0.0.1:8080'")
 	flags.Bool("sinks.stdout.enabled", false, "Whether to enable the stdout metrics sink")
 
@@ -68,7 +75,7 @@ func initConfig() {
 	}
 
 	viper.SetEnvPrefix("CYNOMYS")
-	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	// Ignore errors here because we don't necessarily need a config file
@@ -99,7 +106,7 @@ var rootCmd = &cobra.Command{
 			instance.AddHTTPServer(config.HTTPServer.Address)
 		}
 
-		for _, listenOnUDP := range config.ListenUDP {
+		for _, listenOnUDP := range config.Listen.Udp {
 			addr, err := net.ResolveUDPAddr("udp", listenOnUDP)
 
 			if err != nil {
@@ -109,7 +116,7 @@ var rootCmd = &cobra.Command{
 			instance.AddUDPListener(listener.NewUDP(*addr))
 		}
 
-		for _, listenOnTCP := range config.ListenTCP {
+		for _, listenOnTCP := range config.Listen.Tcp {
 			addr, err := net.ResolveTCPAddr("tcp", listenOnTCP)
 
 			if err != nil {
@@ -119,26 +126,26 @@ var rootCmd = &cobra.Command{
 			instance.AddTCPListener(listener.NewTCP(*addr))
 		}
 
-		for _, sendUDPTo := range config.SendUDP {
+		for _, sendUDPTo := range config.Send.Udp {
 			addr, err := net.ResolveUDPAddr("udp", sendUDPTo)
 
 			if err != nil {
 				return fmt.Errorf("net.ResolveUDPAddr for %q: %w", sendUDPTo, err)
 			}
 
-			instance.AddUDPSender(sender.NewUDPSender(*addr, config.SendInterval, sink, []byte(config.SendData)))
+			instance.AddUDPSender(sender.NewUDPSender(*addr, config.Send.Interval, sink, []byte(config.Send.Data)))
 		}
 
 		// We could probably generalize this a bit better, but it's short enough
 		// not to care for now.
-		for _, sendTCPTo := range config.SendTCP {
+		for _, sendTCPTo := range config.Send.Tcp {
 			addr, err := net.ResolveTCPAddr("tcp", sendTCPTo)
 
 			if err != nil {
 				return fmt.Errorf("net.ResolveTCPAddr for %q: %w", sendTCPTo, err)
 			}
 
-			instance.AddTCPSender(sender.NewTCPSender(*addr, config.SendInterval, sink, []byte(config.SendData)))
+			instance.AddTCPSender(sender.NewTCPSender(*addr, config.Send.Interval, sink, []byte(config.Send.Data)))
 		}
 
 		return instance.Run()

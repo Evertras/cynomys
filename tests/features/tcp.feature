@@ -3,7 +3,7 @@ Feature: send and receive TCP
   Cyn should both send and receive on TCP connections
 
   Scenario: one tries to connect to nothing
-    Given I run cyn --send-tcp 127.0.0.1:1234
+    Given I run cyn --send.tcp 127.0.0.1:1234
     When I wait a moment
     Then the stdout contains "connection refused"
 
@@ -34,14 +34,16 @@ Feature: send and receive TCP
     And I wait 1 second
     Then the stdout does not contain "broken pipe"
 
-  Scenario: an instance is set to call itself via config file
+  Scenario: a tcp instance is set to call itself via config file
     Given a configuration file that contains:
       """
-      listen-tcp:
-        - 127.0.0.1:24568
-      send-tcp:
-        - 127.0.0.1:24568
-      send-interval: 10ms
+      listen:
+        tcp:
+          - 127.0.0.1:24568
+      send:
+        interval: 10ms
+        tcp:
+          - 127.0.0.1:24568
       """
     When cyn is started with the config file
     And I wait 1 second
@@ -50,10 +52,12 @@ Feature: send and receive TCP
   Scenario: an instance is set to call itself via config file and the send interval is set via env variable
     Given a configuration file that contains:
       """
-      listen-tcp:
-        - 127.0.0.1:24568
-      send-tcp:
-        - 127.0.0.1:24568
+      listen:
+        tcp:
+          - 127.0.0.1:24568
+      send:
+        tcp:
+          - 127.0.0.1:24568
       """
     And the environment variable CYNOMYS_SEND_INTERVAL is set to "10ms"
     When cyn is started with the config file
